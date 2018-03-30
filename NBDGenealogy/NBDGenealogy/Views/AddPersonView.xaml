@@ -1,0 +1,34 @@
+﻿<Window x:Class="NBDGenealogy.Views.AddPersonView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NBDGenealogy.Views"
+        mc:Ignorable="d"
+        Title="AddPersonView" Height="200" Width="400">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="15"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="15"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="15"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Column="1" Grid.Row="1" TextAlignment="Center">Imię i nazwisko:</TextBlock>
+        <TextBlock Grid.Column="1" Grid.Row="2" TextAlignment="Center">Data urodzenia:</TextBlock>
+        <TextBlock Grid.Column="1" Grid.Row="3" TextAlignment="Center">Data śmierci:</TextBlock>
+        <TextBlock Grid.Column="1" Grid.Row="4" TextAlignment="Center">Ojciec:</TextBlock>
+        <TextBlock Grid.Column="1" Grid.Row="5" TextAlignment="Center">Matka:</TextBlock>
+        <TextBox Grid.Column="2" Grid.Row="1"></TextBox>
+        <TextBox Grid.Column="2" Grid.Row="2"></TextBox>
+        <TextBox Grid.Column="2" Grid.Row="3"></TextBox>
+    </Grid>
+</Window>
