@@ -22,12 +22,6 @@ namespace NBDGenealogy.ViewModels
         private List<PersonModel> _children;
         private ObservableCollection<PersonModel> _possibleFathers;
 
-        public AddPersonViewModel()
-        {
-            PossibleFathers.Add(new PersonModel { Name = "Janusz", Gender = Gender.Male });
-            PossibleFathers.Add(new PersonModel { Name = "Piotrek", Gender = Gender.Male });
-            PossibleFathers.Add(new PersonModel { Name = "Ryszard", Gender = Gender.Male });
-        }
         public string Name
         {
             get { return _name; }
@@ -84,6 +78,7 @@ namespace NBDGenealogy.ViewModels
             {
                 PossibleFathers.Add((PersonModel)man);
             }
+            db.Close();
             return PossibleFathers;
         }
 

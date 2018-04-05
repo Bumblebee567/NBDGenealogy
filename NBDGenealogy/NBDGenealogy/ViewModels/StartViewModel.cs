@@ -13,8 +13,10 @@ namespace NBDGenealogy.ViewModels
     {
         public void OpenAddPerson()
         {
-            var addPersonView = new AddPersonView();
-            addPersonView.Show();
+            WindowManager w = new WindowManager();
+            w.ShowDialog(new AddPersonViewModel());
+            //var addPersonView = new AddPersonView();
+            //addPersonView.Show();
         }
     }
 }
