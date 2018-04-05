@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NBDGenealogy.Views"
         mc:Ignorable="d"
-        Title="AddPersonView" Height="200" Width="400">
+        Title="AddPersonView" Height="200" Width="400"
+        WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="15"/>
@@ -22,13 +23,15 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="15"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Column="1" Grid.Row="1" TextAlignment="Center">Imię i nazwisko:</TextBlock>
-        <TextBlock Grid.Column="1" Grid.Row="2" TextAlignment="Center">Data urodzenia:</TextBlock>
-        <TextBlock Grid.Column="1" Grid.Row="3" TextAlignment="Center">Data śmierci:</TextBlock>
-        <TextBlock Grid.Column="1" Grid.Row="4" TextAlignment="Center">Ojciec:</TextBlock>
-        <TextBlock Grid.Column="1" Grid.Row="5" TextAlignment="Center">Matka:</TextBlock>
-        <TextBox Grid.Column="2" Grid.Row="1"></TextBox>
+        <TextBlock FontSize="15" Grid.Column="1" Grid.Row="1" TextAlignment="Center">Imię i nazwisko:</TextBlock>
+        <TextBlock FontSize="15" Grid.Column="1" Grid.Row="2" TextAlignment="Center">Data urodzenia:</TextBlock>
+        <TextBlock FontSize="15" Grid.Column="1" Grid.Row="3" TextAlignment="Center">Data śmierci:</TextBlock>
+        <TextBlock FontSize="15" Grid.Column="1" Grid.Row="4" TextAlignment="Center">Ojciec:</TextBlock>
+        <TextBlock FontSize="15" Grid.Column="1" Grid.Row="5" TextAlignment="Center">Matka:</TextBlock>
+        <TextBlock Grid.Column="2" Grid.Row="1"></TextBlock>
         <TextBox Grid.Column="2" Grid.Row="2"></TextBox>
         <TextBox Grid.Column="2" Grid.Row="3"></TextBox>
+        <ComboBox ItemsSource="{Binding PossibleFathers, Mode=OneWay}" Grid.Column="2" Grid.Row="4" DisplayMemberPath="Name"></ComboBox>
+        <ComboBox Grid.Column="2" Grid.Row="5"></ComboBox>
     </Grid>
 </Window>

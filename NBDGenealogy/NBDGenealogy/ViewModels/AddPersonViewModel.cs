@@ -1,10 +1,13 @@
 ﻿using Caliburn.Micro;
+using Db4objects.Db4o;
 using NBDGenealogy.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace NBDGenealogy.ViewModels
 {
@@ -17,7 +20,14 @@ namespace NBDGenealogy.ViewModels
         private PersonModel _father;
         private PersonModel _mother;
         private List<PersonModel> _children;
+        private ObservableCollection<PersonModel> _possibleFathers;
 
+        public AddPersonViewModel()
+        {
+            PossibleFathers.Add(new PersonModel { Name = "Janusz", Gender = Gender.Male });
+            PossibleFathers.Add(new PersonModel { Name = "Piotrek", Gender = Gender.Male });
+            PossibleFathers.Add(new PersonModel { Name = "Ryszard", Gender = Gender.Male });
+        }
         public string Name
         {
             get { return _name; }
@@ -33,7 +43,7 @@ namespace NBDGenealogy.ViewModels
             get { return _deathDate; }
             set { _deathDate = value; }
         }
-        public Gender MyProperty
+        public Gender Gender
         {
             get { return _gender; }
             set { _gender = value; }
@@ -53,5 +63,29 @@ namespace NBDGenealogy.ViewModels
             get { return _children; }
             set { _children = value; }
         }
+        public ObservableCollection<PersonModel> PossibleFathers
+        {
+            get { return AllPossibleFathers(); }
+            set { _possibleFathers = value; }
+        }
+
+        public ObservableCollection<PersonModel> AllPossibleFathers()
+        {
+            IObjectContainer db = Db4oFactory.OpenFile("person.data");
+            PersonModel exPerson = new PersonModel
+            {
+                Name = "Janusz Kowalski",
+                Gender = Gender.Male
+            };
+            db.Store(exPerson);
+            ObservableCollection<PersonModel> PossibleFathers = new ObservableCollection<PersonModel>();
+            var allMenInDatabase = db.QueryByExample(new PersonModel(Gender.Male));
+            foreach (var man in allMenInDatabase)
+            {
+                PossibleFathers.Add((PersonModel)man);
+            }
+            return PossibleFathers;
+        }
+
     }
 }

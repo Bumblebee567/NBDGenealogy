@@ -20,6 +20,12 @@ namespace NBDGenealogy.Models
         public PersonModel Father { get; set; }
         public PersonModel Mother { get; set; }
         public List<PersonModel> Children { get; set; }
-
+        public PersonModel()
+        {
+        }
+        public PersonModel(Gender gender)
+        {
+            Gender = gender;
+        }
     }
 }
