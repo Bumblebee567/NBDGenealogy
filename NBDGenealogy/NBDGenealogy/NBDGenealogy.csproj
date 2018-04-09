@@ -105,11 +105,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\PersonModel.cs" />
-    <Compile Include="ViewModels\AddPersonViewModel.cs" />
     <Compile Include="ViewModels\StartViewModel.cs" />
-    <Compile Include="Views\AddPersonView.xaml.cs">
-      <DependentUpon>AddPersonView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\StartView.xaml.cs">
       <DependentUpon>StartView.xaml</DependentUpon>
     </Compile>
@@ -144,10 +140,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Page Include="Views\AddPersonView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\StartView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
