@@ -118,6 +118,14 @@ namespace NBDGenealogy.ViewModels
                 PossibleFathers.Add((PersonModel)man);
             }
             db.Close();
+            var wrongImported = PossibleFathers.Select(x => x.Gender == EGender.Female).ToArray();
+            for (int i = 0; i < wrongImported.Count(); i++)
+            {
+                if(wrongImported[i] == true)
+                {
+                    PossibleFathers.RemoveAt(i);
+                }
+            }
             return PossibleFathers;
         }
         public ObservableCollection<PersonModel> AllPossibleMothers()
@@ -151,6 +159,8 @@ namespace NBDGenealogy.ViewModels
             Mother = null;
             BirthDate = DateTime.MinValue;
             DeathDate = DateTime.MinValue;
+            NotifyOfPropertyChange("PossibleFathers");
+            NotifyOfPropertyChange("PossibleMothers");
         }
     }
 }
