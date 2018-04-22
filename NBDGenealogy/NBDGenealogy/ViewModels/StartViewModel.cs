@@ -1,5 +1,6 @@
 ﻿using Caliburn.Micro;
 using Db4objects.Db4o;
+using NBDGenealogy.Helpers;
 using NBDGenealogy.Models;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace NBDGenealogy.ViewModels
         private string _name;
         private DateTime _birthDate = DateTime.MinValue;
         private DateTime _deathDate = DateTime.MinValue;
-        private EGender _gender;
+        private EGender? _gender = null;
         private PersonModel _father;
         private PersonModel _mother;
         private List<PersonModel> _children;
@@ -50,7 +51,7 @@ namespace NBDGenealogy.ViewModels
                 NotifyOfPropertyChange(() => DeathDate);
             }
         }
-        public EGender Gender
+        public EGender? Gender
         {
             get { return _gender; }
             set
@@ -118,14 +119,7 @@ namespace NBDGenealogy.ViewModels
                 PossibleFathers.Add((PersonModel)man);
             }
             db.Close();
-            var wrongImported = PossibleFathers.Select(x => x.Gender == EGender.Female).ToArray();
-            for (int i = 0; i < wrongImported.Count(); i++)
-            {
-                if(wrongImported[i] == true)
-                {
-                    PossibleFathers.RemoveAt(i);
-                }
-            }
+            PossibleFathers = PossibleFathersHelper.RemovePossiblyWrongImportedFathers(PossibleFathers);
             return PossibleFathers;
         }
         public ObservableCollection<PersonModel> AllPossibleMothers()
