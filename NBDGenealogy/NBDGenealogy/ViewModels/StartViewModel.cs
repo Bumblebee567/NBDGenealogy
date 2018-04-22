@@ -120,6 +120,7 @@ namespace NBDGenealogy.ViewModels
             }
             db.Close();
             PossibleFathers = PossibleFathersHelper.RemovePossiblyWrongImportedFathers(PossibleFathers);
+            PossibleFathers = PossibleFathersHelper.RemovePossiblyFathersWithWrongAge(PossibleFathers);
             return PossibleFathers;
         }
         public ObservableCollection<PersonModel> AllPossibleMothers()
