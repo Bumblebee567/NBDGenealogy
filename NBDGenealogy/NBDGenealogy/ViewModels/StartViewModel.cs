@@ -121,7 +121,8 @@ namespace NBDGenealogy.ViewModels
             }
             db.Close();
             possibleFathers = PossibleFathersHelper.RemovePossiblyWrongImportedFathers(possibleFathers);
-            possibleFathers = PossibleFathersHelper.RemovePossiblyFathersWithWrongAge(possibleFathers, BirthDate);
+            if (BirthDate != DateTime.MinValue)
+                possibleFathers = PossibleFathersHelper.RemovePossiblyFathersWithWrongAge(possibleFathers, BirthDate);
             return possibleFathers;
         }
         public ObservableCollection<PersonModel> AllPossibleMothers()
@@ -134,11 +135,27 @@ namespace NBDGenealogy.ViewModels
                 possibleMothers.Add((PersonModel)woman);
             }
             db.Close();
+            possibleMothers = PossibleMothersHelper.RemovePossiblyWrongImportedMothers(possibleMothers);
+            if (BirthDate != DateTime.MinValue)
+                possibleMothers = PossibleMothersHelper.RemovePossiblyMothersWithWrongAge(possibleMothers, BirthDate);
             return possibleMothers;
         }
         public void AddPersonToDatabase()
         {
+            if (Name == null)
+            {
+                MessageBox.Show("Nie można dodać osoby bez imienia", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             IObjectContainer db = Db4oFactory.OpenFile("person.data");
+            var allPeopleInDatabase = db.QueryByExample(new PersonModel());
+            foreach (var person in allPeopleInDatabase)
+            {
+                var p = (PersonModel)person;
+                if (p.Name == Name)
+                {
+                    MessageBox.Show("Osoba o podanym imieniu jest już w bazie", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
             PersonModel newPerson = new PersonModel
             {
                 Name = Name,

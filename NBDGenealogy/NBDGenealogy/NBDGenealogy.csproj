@@ -105,6 +105,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Helpers\PossibleFathersHelper.cs" />
+    <Compile Include="Helpers\PossibleMothersHelper.cs" />
     <Compile Include="Models\PersonModel.cs" />
     <Compile Include="ViewModels\StartViewModel.cs" />
     <Compile Include="Views\StartView.xaml.cs">
