@@ -24,24 +24,20 @@ namespace NBDGenealogy.Helpers
         }
         public static ObservableCollection<PersonModel> RemovePossiblyFathersWithWrongAge(ObservableCollection<PersonModel> possibleFathers)
         {
-            //var peopleWithIncorrectAge = possibleFathers.Select(x => DateTime.Now.Subtract(x.BirthDate).TotalDays >= 4380 && x.BirthDate.AddYears(-70) <= DateTime.MinValue).ToList();
+            List<PersonModel> fathersToRemove = new List<PersonModel>();
             foreach (var person in possibleFathers)
             {
-                if(DateTime.Now.Subtract(person.BirthDate).TotalDays < 4380)
+                int differenceInDays = (int)DateTime.Now.Subtract(person.BirthDate).TotalDays;
+
+                if (differenceInDays > 25550 || differenceInDays < 4380)
                 {
-                    if(DateTime.Now.Subtract(person.BirthDate).TotalDays > 25550)
-                    {
-                        possibleFathers.Remove(person);
-                    }
+                    fathersToRemove.Add(person);
                 }
             }
-            //for (int i = 0; i < peopleWithIncorrectAge.Count; i++)
-            //{
-            //    if(peopleWithIncorrectAge[i] == false)
-            //    {
-            //        possibleFathers.RemoveAt(i);
-            //    }
-            //}
+            foreach (var fatherToRemove in fathersToRemove)
+            {
+                possibleFathers.Remove(fatherToRemove);
+            }
             return possibleFathers;
         }
     }

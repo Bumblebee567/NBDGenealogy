@@ -23,6 +23,12 @@ namespace NBDGenealogy.ViewModels
         private List<PersonModel> _children;
         private ObservableCollection<PersonModel> _possibleFathers;
         private ObservableCollection<PersonModel> _possibleMothers;
+        private IEnumerable<PersonModel> _possibleChildren;
+
+        private bool _hasChildren;
+
+
+
 
         public string Name
         {
@@ -101,6 +107,24 @@ namespace NBDGenealogy.ViewModels
                 NotifyOfPropertyChange(() => PossibleMothers);
             }
         }
+        public IEnumerable<PersonModel> PossibleChildren
+        {
+            get { return _possibleChildren; }
+            set
+            {
+                _possibleChildren = value;
+                NotifyOfPropertyChange(() => PossibleChildren);
+            }
+        }
+        public bool HasChildren
+        {
+            get { return _hasChildren; }
+            set
+            {
+                _hasChildren = value;
+                NotifyOfPropertyChange(() => HasChildren);
+            }
+        }
         public IList<EGender> GenderTypes
         {
             get
@@ -108,7 +132,10 @@ namespace NBDGenealogy.ViewModels
                 return Enum.GetValues(typeof(EGender)).Cast<EGender>().ToList<EGender>();
             }
         }
+        public IEnumerable<PersonModel> AllPossibleChildren()
+        {
 
+        }
         public ObservableCollection<PersonModel> AllPossibleFathers()
         {
             IObjectContainer db = Db4oFactory.OpenFile("person.data");
@@ -154,8 +181,9 @@ namespace NBDGenealogy.ViewModels
             Mother = null;
             BirthDate = DateTime.MinValue;
             DeathDate = DateTime.MinValue;
-            NotifyOfPropertyChange("PossibleFathers");
-            NotifyOfPropertyChange("PossibleMothers");
+            Gender = null;
+            NotifyOfPropertyChange(nameof(PossibleFathers));
+            NotifyOfPropertyChange(nameof(PossibleMothers));
         }
     }
 }
