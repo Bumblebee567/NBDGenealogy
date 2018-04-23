@@ -30,8 +30,8 @@
                             <RowDefinition Height="15"/>
                         </Grid.RowDefinitions>
                         <TextBlock FontSize="18" Grid.Column="1" Grid.Row="1" TextAlignment="Center">Imię i nazwisko:</TextBlock>
-                        <TextBlock FontSize="13" Grid.Column="1" Grid.Row="2" TextAlignment="Center">Data urodzenia (yyyy-mm-dd):</TextBlock>
-                        <TextBlock FontSize="13" Grid.Column="1" Grid.Row="3" TextAlignment="Center">Data śmierci (yyyy-mm-dd):</TextBlock>
+                        <TextBlock FontSize="13" Grid.Column="1" Grid.Row="2" TextAlignment="Center">Data urodzenia (mm/dd/yyyy):</TextBlock>
+                        <TextBlock FontSize="13" Grid.Column="1" Grid.Row="3" TextAlignment="Center">Data śmierci (mm/dd/yyyy):</TextBlock>
                         <TextBlock FontSize="18" Grid.Column="1" Grid.Row="4" TextAlignment="Center">Ojciec:</TextBlock>
                         <TextBlock FontSize="18" Grid.Column="1" Grid.Row="5" TextAlignment="Center">Matka:</TextBlock>
                         <TextBlock FontSize="18" Grid.Column="1" Grid.Row="6" TextAlignment="Center">Płeć:</TextBlock>

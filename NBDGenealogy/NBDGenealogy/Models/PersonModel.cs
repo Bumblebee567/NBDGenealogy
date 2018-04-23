@@ -17,8 +17,8 @@ namespace NBDGenealogy.Models
         public DateTime BirthDate { get; set; }
         public DateTime DeathDate { get; set; }
         public EGender? Gender { get; set; }
-        public PersonModel Father { get; set; }
-        public PersonModel Mother { get; set; }
+        public string Father { get; set; }
+        public string Mother { get; set; }
         public List<PersonModel> Children { get; set; }
         public PersonModel()
         {
@@ -26,6 +26,10 @@ namespace NBDGenealogy.Models
         public PersonModel(EGender gender)
         {
             Gender = gender;
+        }
+        public PersonModel(string name)
+        {
+            Name = name;
         }
     }
 }

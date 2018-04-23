@@ -22,12 +22,12 @@ namespace NBDGenealogy.Helpers
             }
             return importedFathers;
         }
-        public static ObservableCollection<PersonModel> RemovePossiblyFathersWithWrongAge(ObservableCollection<PersonModel> possibleFathers)
+        public static ObservableCollection<PersonModel> RemovePossiblyFathersWithWrongAge(ObservableCollection<PersonModel> possibleFathers, DateTime childBirthDate)
         {
             List<PersonModel> fathersToRemove = new List<PersonModel>();
             foreach (var person in possibleFathers)
             {
-                int differenceInDays = (int)DateTime.Now.Subtract(person.BirthDate).TotalDays;
+                int differenceInDays = (int)childBirthDate.Subtract(person.BirthDate).TotalDays;
 
                 if (differenceInDays > 25550 || differenceInDays < 4380)
                 {
