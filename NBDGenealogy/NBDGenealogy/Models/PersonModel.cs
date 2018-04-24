@@ -19,7 +19,7 @@ namespace NBDGenealogy.Models
         public EGender? Gender { get; set; }
         public string Father { get; set; }
         public string Mother { get; set; }
-        public List<PersonModel> Children { get; set; }
+        public List<string> Children { get; set; }
         public PersonModel()
         {
         }

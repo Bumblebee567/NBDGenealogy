@@ -20,9 +20,31 @@ namespace NBDGenealogy.ViewModels
         private EGender? _gender = null;
         private PersonModel _father;
         private PersonModel _mother;
-        private List<PersonModel> _children;
+        private List<string> _children;
         private ObservableCollection<PersonModel> _possibleFathers;
         private ObservableCollection<PersonModel> _possibleMothers;
+        private BindableCollection<PersonModel> _allPeopleInDatabase;
+        private PersonModel _selectedPerson;
+        public PersonModel SelectedPerson
+        {
+            get { return _selectedPerson; }
+            set
+            {
+                _selectedPerson = value;
+                NotifyOfPropertyChange(() => SelectedPerson);
+            }
+        }
+
+        public BindableCollection<PersonModel> AllPeopleInDatabase
+        {
+            get { return GetAllPersonsFormDatabase(); }
+            set
+            {
+                _allPeopleInDatabase = value;
+                NotifyOfPropertyChange(() => AllPeopleInDatabase);
+            }
+        }
+
 
         public string Name
         {
@@ -80,7 +102,7 @@ namespace NBDGenealogy.ViewModels
                 NotifyOfPropertyChange(() => Mother);
             }
         }
-        public List<PersonModel> Children
+        public List<string> Children
         {
             get { return _children; }
             set { _children = value; }
@@ -109,6 +131,23 @@ namespace NBDGenealogy.ViewModels
             {
                 return Enum.GetValues(typeof(EGender)).Cast<EGender>().ToList<EGender>();
             }
+        }
+        public BindableCollection<PersonModel> GetAllPersonsFormDatabase()
+        {
+            IObjectContainer db = Db4oFactory.OpenFile("person.data");
+            BindableCollection<PersonModel> allPeopleInDatabse = new BindableCollection<PersonModel>();
+            var allPeople = db.QueryByExample(new PersonModel());
+            foreach (var person in allPeople)
+            {
+                allPeopleInDatabse.Add((PersonModel)person);
+            }
+            db.Close();
+            foreach (var person in allPeopleInDatabse)
+            {
+                person.BirthDate.ToShortDateString();
+                person.DeathDate.ToShortDateString();
+            }
+            return allPeopleInDatabse;
         }
         public ObservableCollection<PersonModel> AllPossibleFathers()
         {
@@ -146,55 +185,70 @@ namespace NBDGenealogy.ViewModels
             {
                 MessageBox.Show("Nie można dodać osoby bez imienia", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            IObjectContainer db = Db4oFactory.OpenFile("person.data");
-            var allPeopleInDatabase = db.QueryByExample(new PersonModel());
-            foreach (var person in allPeopleInDatabase)
+            else
             {
-                var p = (PersonModel)person;
-                if (p.Name == Name)
+                IObjectContainer db = Db4oFactory.OpenFile("person.data");
+                var allPeopleInDatabase = db.QueryByExample(new PersonModel());
+                List<PersonModel> personHelperList = new List<PersonModel>();
+                foreach (var person in allPeopleInDatabase)
+                {
+                    var p = (PersonModel)person;
+                    personHelperList.Add(p);
+                }
+                if (personHelperList.Any(x => x.Name == Name))
                 {
                     MessageBox.Show("Osoba o podanym imieniu jest już w bazie", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                    db.Close();
+                    Name = null;
+                    return;
                 }
-            }
-            PersonModel newPerson = new PersonModel
-            {
-                Name = Name,
-                BirthDate = BirthDate,
-                DeathDate = DeathDate,
-                Gender = Gender
-            };
-            if (Father != null)
-                newPerson.Father = Father.Name;
-            if (Mother != null)
-                newPerson.Mother = Mother.Name;
-            if (newPerson.Father != null)
-            {
-                var newPersonFather = (PersonModel)db.QueryByExample(new PersonModel(newPerson.Father)).Next();
-                if (newPersonFather.Children == null)
+                else
                 {
-                    newPersonFather.Children = new List<PersonModel>();
+                    PersonModel newPerson = new PersonModel
+                    {
+                        Name = Name,
+                        BirthDate = BirthDate,
+                        DeathDate = DeathDate,
+                        Gender = Gender
+                    };
+                    if (Father != null)
+                        newPerson.Father = Father.Name;
+                    if (Mother != null)
+                        newPerson.Mother = Mother.Name;
+                    if (newPerson.Father != null)
+                    {
+                        var newPersonFather = (PersonModel)db.QueryByExample(new PersonModel(newPerson.Father)).Next();
+                        if (newPersonFather.Children == null)
+                        {
+                            newPersonFather.Children = new List<string>();
+                        }
+                        newPersonFather.Children.Add(newPerson.Name);
+                        db.Store(newPersonFather);
+                    }
+                    if (newPerson.Mother != null)
+                    {
+                        var newPersonMother = (PersonModel)db.QueryByExample(new PersonModel(newPerson.Mother)).Next();
+                        if (newPersonMother.Children == null)
+                        {
+                            newPersonMother.Children = new List<string>();
+                        }
+                        newPersonMother.Children.Add(newPerson.Name);
+                        db.Store(newPersonMother);
+                    }
+                    db.Store(newPerson);
+                    db.Close();
+                    Name = null;
+                    Father = null;
+                    Mother = null;
+                    BirthDate = DateTime.MinValue;
+                    DeathDate = DateTime.MinValue;
+                    Gender = null;
+                    NotifyOfPropertyChange(nameof(PossibleFathers));
+                    NotifyOfPropertyChange(nameof(PossibleMothers));
+                    NotifyOfPropertyChange(nameof(AllPeopleInDatabase));
                 }
-                newPersonFather.Children.Add(newPerson);
+
             }
-            if (newPerson.Mother != null)
-            {
-                var newPersonMother = (PersonModel)db.QueryByExample(new PersonModel(newPerson.Mother)).Next();
-                if (newPersonMother.Children == null)
-                {
-                    newPersonMother.Children = new List<PersonModel>();
-                }
-                newPersonMother.Children.Add(newPerson);
-            }
-            db.Store(newPerson);
-            db.Close();
-            Name = null;
-            Father = null;
-            Mother = null;
-            BirthDate = DateTime.MinValue;
-            DeathDate = DateTime.MinValue;
-            Gender = null;
-            NotifyOfPropertyChange(nameof(PossibleFathers));
-            NotifyOfPropertyChange(nameof(PossibleMothers));
         }
     }
 }
