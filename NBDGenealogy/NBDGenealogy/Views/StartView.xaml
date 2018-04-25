@@ -88,11 +88,11 @@
                         <Label Grid.Column="4" Grid.Row="1" Content="Ojciec"/>
                         <Label Grid.Column="4" Grid.Row="2" Content="Matka"/>
                         <TextBox Width="150" Grid.Column="2" Grid.Row="1" Text="{Binding SelectedPerson.Name}"/>
-                        <TextBox Width="150" Grid.Column="2" Grid.Row="2" Text="{Binding SelectedPerson.BirthDate}"/>
+                        <TextBox Width="150" Grid.Column="2" Grid.Row="2" Text="{Binding BirthDate}"/>
                         <TextBox Width="150" Grid.Column="2" Grid.Row="3" Text="{Binding SelectedPerson.DeathDate}"/>
                         <ComboBox ItemsSource="{Binding GenderTypes, Mode=OneWay}" SelectedValue="{Binding SelectedPerson.Gender, Mode=TwoWay}" Grid.Column="2" Grid.Row="4" FontSize="12"></ComboBox>
-                        <ComboBox ItemsSource="{Binding ModifiedPersonPossibleFathers, Mode=TwoWay}" SelectedValue="{Binding SelectedPerson.Father.Name}" Grid.Column="5" Grid.Row="1" DisplayMemberPath="Name" FontSize="12"></ComboBox>
-                        <ComboBox ItemsSource="{Binding ModifiedPersonPossibleMothers, Mode=TwoWay}" SelectedValue="{Binding SelectedPerson.Mother.Name}" Grid.Column="5" Grid.Row="2" DisplayMemberPath="Name" FontSize="12"></ComboBox>
+                        <ComboBox ItemsSource="{Binding ModifiedPersonPossibleFathers, Mode=TwoWay}" SelectedValue="{Binding SelectedPersonFather}" Grid.Column="5" Grid.Row="1" DisplayMemberPath="Name" FontSize="12"></ComboBox>
+                        <ComboBox ItemsSource="{Binding ModifiedPersonPossibleMothers, Mode=TwoWay}" SelectedValue="{Binding SelectedPersonMother}" Grid.Column="5" Grid.Row="2" DisplayMemberPath="Name" FontSize="12"></ComboBox>
                         <TextBlock Text="{Binding SelectedName}" Grid.Column="5" Grid.Row="4"/>
                         <Button x:Name="SaveModifiedPerson" Grid.Column="3" Grid.Row="5" Content="wyślij" Width="50" Margin="7"/>
 

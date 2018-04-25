@@ -27,13 +27,52 @@ namespace NBDGenealogy.ViewModels
         private PersonModel _selectedPerson;
         private ObservableCollection<PersonModel> _modifiedPersonPossibleFathers;
         private ObservableCollection<PersonModel> _mofifiedPersonPossibleMother;
+        private DateTime _selectedPersonBirthDate;
+        private PersonModel _selectedPersonFather;
+        private PersonModel _selectedPersonMother;
+
+        public PersonModel SelectedPersonMother
+        {
+            get { return _selectedPersonMother; }
+            set
+            {
+                _selectedPersonMother = value;
+                NotifyOfPropertyChange(() => SelectedPersonMother);
+            }
+        }
+
+
+        public PersonModel SelectedPersonFather
+        {
+            get { return _selectedPersonFather; }
+            set
+            {
+                _selectedPersonFather = value;
+                NotifyOfPropertyChange(() => SelectedPersonFather);
+            }
+        }
+
+
+        public DateTime SelectedPersonBirthDate
+        {
+            get { return _selectedPersonBirthDate; }
+            set
+            {
+                _selectedPersonBirthDate = SelectedPerson.BirthDate;
+                AllPossibleFathers(SelectedPerson, _birthDate);
+                AllPossibleMothers(SelectedPerson, _birthDate);
+                NotifyOfPropertyChange(() => SelectedPerson);
+                NotifyOfPropertyChange(() => SelectedPersonBirthDate);
+            }
+        }
+
         public string SelectedName { get; set; }
 
         public ObservableCollection<PersonModel> ModifiedPersonPossibleMothers
         {
             get
             {
-                return AllPossibleMothers(SelectedPerson);
+                return AllPossibleMothers(_selectedPerson, _birthDate);
             }
             set
             {
@@ -47,7 +86,7 @@ namespace NBDGenealogy.ViewModels
         {
             get
             {
-                return AllPossibleFathers(SelectedPerson);
+                return AllPossibleFathers(_selectedPerson, _birthDate);
             }
             set
             {
@@ -58,15 +97,24 @@ namespace NBDGenealogy.ViewModels
 
         public PersonModel SelectedPerson
         {
-            get { return _selectedPerson; }
+            get
+            {
+                return _selectedPerson;
+            }
             set
             {
                 _selectedPerson = value;
                 if (SelectedName == null)
+                {
                     SelectedName = value.Name;
+                    BirthDate = _selectedPerson.BirthDate;
+                }
                 NotifyOfPropertyChange(() => SelectedPerson);
+                _modifiedPersonPossibleFathers = AllPossibleFathers(_selectedPerson, _birthDate);
+                _mofifiedPersonPossibleMother = AllPossibleMothers(_selectedPerson, _birthDate);
                 NotifyOfPropertyChange(() => ModifiedPersonPossibleFathers);
                 NotifyOfPropertyChange(() => ModifiedPersonPossibleMothers);
+                NotifyOfPropertyChange(() => SelectedPersonBirthDate);
             }
         }
 
@@ -98,7 +146,10 @@ namespace NBDGenealogy.ViewModels
                 _birthDate = value;
                 NotifyOfPropertyChange(() => BirthDate);
                 AllPossibleFathers();
+                ModifiedPersonPossibleFathers = AllPossibleFathers(_selectedPerson, _birthDate);
+                ModifiedPersonPossibleMothers = AllPossibleMothers(_selectedPerson, _birthDate);
                 NotifyOfPropertyChange(() => PossibleFathers);
+                NotifyOfPropertyChange(() => PossibleMothers);
             }
         }
         public DateTime DeathDate
@@ -214,7 +265,7 @@ namespace NBDGenealogy.ViewModels
                 possibleMothers = PossibleMothersHelper.RemovePossiblyMothersWithWrongAge(possibleMothers, BirthDate);
             return possibleMothers;
         }
-        public ObservableCollection<PersonModel> AllPossibleFathers(PersonModel selectedPerson)
+        public ObservableCollection<PersonModel> AllPossibleFathers(PersonModel selectedPerson, DateTime birthDate)
         {
             IObjectContainer db = Db4oFactory.OpenFile("person.data");
             ObservableCollection<PersonModel> possibleFathers = new ObservableCollection<PersonModel>();
@@ -228,11 +279,12 @@ namespace NBDGenealogy.ViewModels
             if (selectedPerson != null)
             {
                 if (selectedPerson.BirthDate != DateTime.MinValue)
-                    possibleFathers = PossibleFathersHelper.RemovePossiblyFathersWithWrongAge(possibleFathers, selectedPerson.BirthDate);
+                    possibleFathers = PossibleFathersHelper.RemovePossiblyFathersWithWrongAge(possibleFathers, birthDate);
             }
+            possibleFathers.Add(new PersonModel("-brak-"));
             return possibleFathers;
         }
-        public ObservableCollection<PersonModel> AllPossibleMothers(PersonModel selectedPerson)
+        public ObservableCollection<PersonModel> AllPossibleMothers(PersonModel selectedPerson, DateTime birthDate)
         {
             IObjectContainer db = Db4oFactory.OpenFile("person.data");
             ObservableCollection<PersonModel> possibleMothers = new ObservableCollection<PersonModel>();
@@ -246,8 +298,9 @@ namespace NBDGenealogy.ViewModels
             if (selectedPerson != null)
             {
                 if (selectedPerson.BirthDate != DateTime.MinValue)
-                    possibleMothers = PossibleMothersHelper.RemovePossiblyMothersWithWrongAge(possibleMothers, selectedPerson.BirthDate);
+                    possibleMothers = PossibleMothersHelper.RemovePossiblyMothersWithWrongAge(possibleMothers, birthDate);
             }
+            possibleMothers.Add(new PersonModel("-brak-"));
             return possibleMothers;
         }
         public void AddPersonToDatabase()
@@ -340,20 +393,20 @@ namespace NBDGenealogy.ViewModels
 
                 var personToModify = db.QueryByExample(new PersonModel { Name = SelectedName }).Next() as PersonModel;
                 personToModify.Name = SelectedPerson.Name;
-                personToModify.Father = SelectedPerson.Father;
-                personToModify.Mother = SelectedPerson.Mother;
-                personToModify.BirthDate = SelectedPerson.BirthDate;
+                personToModify.Father = SelectedPersonFather.Name;
+                personToModify.Mother = SelectedPersonMother.Name;
+                personToModify.BirthDate = BirthDate;
                 personToModify.DeathDate = SelectedPerson.DeathDate;
                 personToModify.Gender = SelectedPerson.Gender;
-                if (SelectedPerson.Father != null)
-                    personToModify.Father = SelectedPerson.Father;
+                if (SelectedPersonFather.Name != "-brak")
+                    personToModify.Father = SelectedPersonFather.Name;
                 else
                     personToModify.Father = null;
-                if (SelectedPerson.Mother != null)
-                    personToModify.Mother = SelectedPerson.Mother;
+                if (SelectedPersonMother.Name != "-brak")
+                    personToModify.Mother = SelectedPersonMother.Name;
                 else
                     personToModify.Mother = null;
-                if (SelectedPerson.Father != null)
+                if (SelectedPersonFather.Name != "-brak")
                 {
                     var newPersonFather = (PersonModel)db.QueryByExample(new PersonModel(personToModify.Father)).Next();
                     if (newPersonFather.Children == null)
@@ -363,7 +416,7 @@ namespace NBDGenealogy.ViewModels
                     newPersonFather.Children.Add(personToModify.Name);
                     db.Store(newPersonFather);
                 }
-                if (SelectedPerson.Mother != null)
+                if (SelectedPersonMother.Name != "-brak")
                 {
                     var newPersonMother = (PersonModel)db.QueryByExample(new PersonModel(personToModify.Mother)).Next();
                     if (newPersonMother.Children == null)
