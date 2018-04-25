@@ -398,15 +398,34 @@ namespace NBDGenealogy.ViewModels
                 personToModify.BirthDate = BirthDate;
                 personToModify.DeathDate = SelectedPerson.DeathDate;
                 personToModify.Gender = SelectedPerson.Gender;
-                if (SelectedPersonFather.Name != "-brak")
+                if (SelectedPersonFather.Name == "-brak")
                     personToModify.Father = SelectedPersonFather.Name;
                 else
+                {
+                    var newPersonFather = (PersonModel)db.QueryByExample(new PersonModel(SelectedPerson.Father)).Next();
+                    newPersonFather.Children.Remove(SelectedPerson.Name);
+                    if(newPersonFather.Children.Count == 0)
+                    {
+                        newPersonFather.Children = null;
+                    }
+                    db.Store(newPersonFather);
                     personToModify.Father = null;
-                if (SelectedPersonMother.Name != "-brak")
+                }
+
+                if (SelectedPersonMother.Name == "-brak")
                     personToModify.Mother = SelectedPersonMother.Name;
                 else
+                {
+                    var newPersonMother = (PersonModel)db.QueryByExample(new PersonModel(SelectedPerson.Mother)).Next();
+                    newPersonMother.Children.Remove(SelectedPerson.Name);
+                    if(newPersonMother.Children.Count == 0)
+                    {
+                        newPersonMother.Children = null;
+                    }
+                    db.Store(newPersonMother);
                     personToModify.Mother = null;
-                if (SelectedPersonFather.Name != "-brak")
+                }
+                if (SelectedPersonFather.Name == "-brak")
                 {
                     var newPersonFather = (PersonModel)db.QueryByExample(new PersonModel(personToModify.Father)).Next();
                     if (newPersonFather.Children == null)
@@ -416,7 +435,7 @@ namespace NBDGenealogy.ViewModels
                     newPersonFather.Children.Add(personToModify.Name);
                     db.Store(newPersonFather);
                 }
-                if (SelectedPersonMother.Name != "-brak")
+                if (SelectedPersonMother.Name == "-brak")
                 {
                     var newPersonMother = (PersonModel)db.QueryByExample(new PersonModel(personToModify.Mother)).Next();
                     if (newPersonMother.Children == null)
