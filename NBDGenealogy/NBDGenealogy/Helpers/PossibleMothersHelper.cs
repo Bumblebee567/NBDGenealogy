@@ -10,17 +10,14 @@ namespace NBDGenealogy.Helpers
 {
     class PossibleMothersHelper
     {
-        public static ObservableCollection<PersonModel> RemovePossiblyWrongImportedMothers(ObservableCollection<PersonModel> importedFathers)
+        public static ObservableCollection<PersonModel> RemovePossiblyWrongImportedMothers(ObservableCollection<PersonModel> importedMothers)
         {
-            var wrongImported = importedFathers.Select(x => x.Gender == EGender.Male).ToList();
-            for (int i = 0; i < wrongImported.Count; i++)
+            var wrongImported = importedMothers.Where(x => x.Gender == EGender.Male).ToList();
+            foreach (var wi in wrongImported)
             {
-                if (wrongImported[i] == true)
-                {
-                    importedFathers.RemoveAt(i);
-                }
+                importedMothers.Remove(wi);
             }
-            return importedFathers;
+            return importedMothers;
         }
         public static ObservableCollection<PersonModel> RemovePossiblyMothersWithWrongAge(ObservableCollection<PersonModel> possibleMothers, DateTime childBirthDate)
         {

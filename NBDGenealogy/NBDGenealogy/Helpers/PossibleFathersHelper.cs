@@ -12,13 +12,10 @@ namespace NBDGenealogy.Helpers
     {
         public static ObservableCollection<PersonModel> RemovePossiblyWrongImportedFathers(ObservableCollection<PersonModel> importedFathers)
         {
-            var wrongImported = importedFathers.Select(x => x.Gender == EGender.Female).ToList();
-            for (int i = 0; i < wrongImported.Count; i++)
+            var wrongImported = importedFathers.Where(x => x.Gender == EGender.Female).ToList();
+            foreach (var wi in wrongImported)
             {
-                if (wrongImported[i] == true)
-                {
-                    importedFathers.RemoveAt(i);
-                }
+                importedFathers.Remove(wi);
             }
             return importedFathers;
         }
