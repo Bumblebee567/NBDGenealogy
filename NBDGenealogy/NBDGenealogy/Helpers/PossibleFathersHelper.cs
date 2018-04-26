@@ -39,5 +39,19 @@ namespace NBDGenealogy.Helpers
             }
             return possibleFathers;
         }
+        public static bool IsOriginalFatherCorrectAfterBirthDateModification(DateTime newBirthDate, DateTime selectedPersonFatherBirthDate)
+        {
+            const int twelveYearsInTotalDays = 4380;
+            const int seventyYearsInTotalDays = 25550;
+            int differenceInDays = (int)newBirthDate.Subtract(selectedPersonFatherBirthDate).TotalDays;
+            if (differenceInDays > seventyYearsInTotalDays || differenceInDays < twelveYearsInTotalDays)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
 }

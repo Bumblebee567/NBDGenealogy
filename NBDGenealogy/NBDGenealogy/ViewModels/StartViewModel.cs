@@ -30,6 +30,8 @@ namespace NBDGenealogy.ViewModels
         private DateTime _selectedPersonBirthDate;
         private PersonModel _selectedPersonFather;
         private PersonModel _selectedPersonMother;
+        public string SelectedName { get; set; }
+        public DateTime ModifiedPersonOriginalBirthDate { get; set; }
 
         public PersonModel SelectedPersonMother
         {
@@ -66,7 +68,6 @@ namespace NBDGenealogy.ViewModels
             }
         }
 
-        public string SelectedName { get; set; }
 
         public ObservableCollection<PersonModel> ModifiedPersonPossibleMothers
         {
@@ -107,6 +108,7 @@ namespace NBDGenealogy.ViewModels
                 if (SelectedName == null)
                 {
                     SelectedName = value.Name;
+                    ModifiedPersonOriginalBirthDate = value.BirthDate;
                     BirthDate = _selectedPerson.BirthDate;
                 }
                 NotifyOfPropertyChange(() => SelectedPerson);
@@ -391,20 +393,22 @@ namespace NBDGenealogy.ViewModels
                     personHelperList.Add(p);
                 }
 
-                var personToModify = db.QueryByExample(new PersonModel { Name = SelectedName }).Next() as PersonModel;
+                var personToModify = db.QueryByExample(new PersonModel(SelectedName)).Next() as PersonModel;
                 personToModify.Name = SelectedPerson.Name;
-                personToModify.Father = SelectedPersonFather.Name;
-                personToModify.Mother = SelectedPersonMother.Name;
+                if (SelectedPersonFather != null)
+                    personToModify.Father = SelectedPersonFather.Name;
+                if (SelectedPersonMother != null)
+                    personToModify.Mother = SelectedPersonMother.Name;
                 personToModify.BirthDate = BirthDate;
                 personToModify.DeathDate = SelectedPerson.DeathDate;
                 personToModify.Gender = SelectedPerson.Gender;
-                if (SelectedPersonFather.Name == "-brak")
+                if (SelectedPersonFather.Name != "-brak-")
                     personToModify.Father = SelectedPersonFather.Name;
                 else
                 {
                     var newPersonFather = (PersonModel)db.QueryByExample(new PersonModel(SelectedPerson.Father)).Next();
                     newPersonFather.Children.Remove(SelectedPerson.Name);
-                    if(newPersonFather.Children.Count == 0)
+                    if (newPersonFather.Children.Count == 0)
                     {
                         newPersonFather.Children = null;
                     }
@@ -412,20 +416,20 @@ namespace NBDGenealogy.ViewModels
                     personToModify.Father = null;
                 }
 
-                if (SelectedPersonMother.Name == "-brak")
+                if (SelectedPersonMother.Name != "-brak-")
                     personToModify.Mother = SelectedPersonMother.Name;
                 else
                 {
                     var newPersonMother = (PersonModel)db.QueryByExample(new PersonModel(SelectedPerson.Mother)).Next();
                     newPersonMother.Children.Remove(SelectedPerson.Name);
-                    if(newPersonMother.Children.Count == 0)
+                    if (newPersonMother.Children.Count == 0)
                     {
                         newPersonMother.Children = null;
                     }
                     db.Store(newPersonMother);
                     personToModify.Mother = null;
                 }
-                if (SelectedPersonFather.Name == "-brak")
+                if (SelectedPersonFather.Name != "-brak")
                 {
                     var newPersonFather = (PersonModel)db.QueryByExample(new PersonModel(personToModify.Father)).Next();
                     if (newPersonFather.Children == null)
@@ -435,7 +439,7 @@ namespace NBDGenealogy.ViewModels
                     newPersonFather.Children.Add(personToModify.Name);
                     db.Store(newPersonFather);
                 }
-                if (SelectedPersonMother.Name == "-brak")
+                if (SelectedPersonMother.Name != "-brak")
                 {
                     var newPersonMother = (PersonModel)db.QueryByExample(new PersonModel(personToModify.Mother)).Next();
                     if (newPersonMother.Children == null)
