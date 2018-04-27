@@ -12,7 +12,7 @@ using System.Windows;
 
 namespace NBDGenealogy.ViewModels
 {
-    public class StartViewModel : Screen
+    public class StartViewModel : Conductor<object>
     {
         private string _name;
         private DateTime _birthDate = DateTime.MinValue;
@@ -455,6 +455,10 @@ namespace NBDGenealogy.ViewModels
                 NotifyOfPropertyChange(nameof(AllPeopleInDatabase));
 
             }
+        }
+        public void LoadModifyPersonView()
+        {
+            ActivateItem(new ModifyPersonViewModel());
         }
     }
 }

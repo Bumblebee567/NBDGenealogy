@@ -107,6 +107,7 @@
     <Compile Include="Helpers\PossibleFathersHelper.cs" />
     <Compile Include="Helpers\PossibleMothersHelper.cs" />
     <Compile Include="Models\PersonModel.cs" />
+    <Compile Include="ViewModels\ModifyPersonViewModel.cs" />
     <Compile Include="ViewModels\StartViewModel.cs" />
     <Compile Include="Views\ModifyPersonView.xaml.cs">
       <DependentUpon>ModifyPersonView.xaml</DependentUpon>
