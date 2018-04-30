@@ -44,7 +44,13 @@ namespace NBDGenealogy.ViewModels
         }
         public BindableCollection<PersonModel> PossibleFathers
         {
-            get { return AllPossibleFathers(_selectedPerson, _birthDate.Value); }
+            get
+            {
+                if (BirthDate == null)
+                    return AllPossibleFathers(_selectedPerson, _selectedPerson.BirthDate);
+                else
+                    return AllPossibleFathers(_selectedPerson, BirthDate.Value);
+            }
             set
             {
                 _possibleFathers = value;
@@ -78,8 +84,8 @@ namespace NBDGenealogy.ViewModels
             {
                 _birthDate = value;
                 NotifyOfPropertyChange(() => BirthDate);
-                NotifyOfPropertyChange(() => PossibleMothers);
                 NotifyOfPropertyChange(() => PossibleFathers);
+                NotifyOfPropertyChange(() => PossibleMothers);
             }
         }
         public PersonModel SelectedPerson
@@ -88,12 +94,14 @@ namespace NBDGenealogy.ViewModels
             set
             {
                 _selectedPerson = value;
-                _name = SelectedPerson.Name;
-                _birthDate = SelectedPerson.BirthDate;
-                _deathDate = SelectedPerson.DeathDate;
-                _gender = SelectedPerson.Gender;
-                _father.Name = SelectedPerson.Father;
-                _mother.Name = SelectedPerson.Mother;
+                Name = SelectedPerson.Name;
+                BirthDate = SelectedPerson.BirthDate;
+                DeathDate = SelectedPerson.DeathDate;
+                Gender = SelectedPerson.Gender;
+                if(SelectedPerson.Father != null)
+                    Father.Name = SelectedPerson.Father;
+                if(SelectedPerson.Mother != null)
+                    Mother.Name = SelectedPerson.Mother;
                 NotifyOfPropertyChange(() => SelectedPerson);
             }
         }

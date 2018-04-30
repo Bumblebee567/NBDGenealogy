@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace NBDGenealogy.ViewModels
 {
@@ -140,6 +141,76 @@ namespace NBDGenealogy.ViewModels
             if (BirthDate != DateTime.MinValue)
                 possibleMothers = PossibleMothersHelper.RemovePossiblyMothersWithWrongAge(possibleMothers, BirthDate);
             return possibleMothers;
+        }
+        public void AddPersonToDatabase()
+        {
+            if (Name == null)
+            {
+                MessageBox.Show("Nie można dodać osoby bez imienia", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                IObjectContainer db = Db4oFactory.OpenFile("person.data");
+                var allPeopleInDatabase = db.QueryByExample(new PersonModel());
+                List<PersonModel> personHelperList = new List<PersonModel>();
+                foreach (var person in allPeopleInDatabase)
+                {
+                    var p = (PersonModel)person;
+                    personHelperList.Add(p);
+                }
+                if (personHelperList.Any(x => x.Name == Name))
+                {
+                    MessageBox.Show("Osoba o podanym imieniu jest już w bazie", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                    db.Close();
+                    Name = null;
+                    return;
+                }
+                else
+                {
+                    PersonModel newPerson = new PersonModel
+                    {
+                        Name = Name,
+                        BirthDate = BirthDate,
+                        DeathDate = DeathDate,
+                        Gender = Gender
+                    };
+                    if (Father != null)
+                        newPerson.Father = Father.Name;
+                    if (Mother != null)
+                        newPerson.Mother = Mother.Name;
+                    if (newPerson.Father != null)
+                    {
+                        var newPersonFather = (PersonModel)db.QueryByExample(new PersonModel(newPerson.Father)).Next();
+                        if (newPersonFather.Children == null)
+                        {
+                            newPersonFather.Children = new List<string>();
+                        }
+                        newPersonFather.Children.Add(newPerson.Name);
+                        db.Store(newPersonFather);
+                    }
+                    if (newPerson.Mother != null)
+                    {
+                        var newPersonMother = (PersonModel)db.QueryByExample(new PersonModel(newPerson.Mother)).Next();
+                        if (newPersonMother.Children == null)
+                        {
+                            newPersonMother.Children = new List<string>();
+                        }
+                        newPersonMother.Children.Add(newPerson.Name);
+                        db.Store(newPersonMother);
+                    }
+                    db.Store(newPerson);
+                    db.Close();
+                    Name = null;
+                    Father = null;
+                    Mother = null;
+                    BirthDate = DateTime.MinValue;
+                    DeathDate = DateTime.MinValue;
+                    Gender = null;
+                    NotifyOfPropertyChange(nameof(PossibleFathers));
+                    NotifyOfPropertyChange(nameof(PossibleMothers));
+                }
+
+            }
         }
         #endregion
     }

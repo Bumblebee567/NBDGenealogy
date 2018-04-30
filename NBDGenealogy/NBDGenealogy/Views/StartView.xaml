@@ -4,58 +4,67 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NBDGenealogy.Views"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:cal="http://www.caliburnproject.org"
         mc:Ignorable="d"
-        Title="Genealogia" Height="400" Width="595"
+        Title="Genealogia" Height="430" Width="645"
         WindowStartupLocation="CenterScreen">
-    <Grid>
-        <TabControl>
-            <TabItem Header="Dodaj osobę">
-                <Grid>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="15"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="15"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="15"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="15"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock FontSize="18" Grid.Column="1" Grid.Row="1" TextAlignment="Center">Imię i nazwisko:</TextBlock>
-                        <TextBlock FontSize="13" Grid.Column="1" Grid.Row="2" TextAlignment="Center">Data urodzenia (mm/dd/yyyy):</TextBlock>
-                        <TextBlock FontSize="13" Grid.Column="1" Grid.Row="3" TextAlignment="Center">Data śmierci (mm/dd/yyyy):</TextBlock>
-                        <TextBlock FontSize="18" Grid.Column="1" Grid.Row="4" TextAlignment="Center">Ojciec:</TextBlock>
-                        <TextBlock FontSize="18" Grid.Column="1" Grid.Row="5" TextAlignment="Center">Matka:</TextBlock>
-                        <TextBlock FontSize="18" Grid.Column="1" Grid.Row="6" TextAlignment="Center">Płeć:</TextBlock>
-                        <TextBox x:Name="Name" FontSize="18" Grid.Column="2" Grid.Row="1"></TextBox>
-                        <TextBox x:Name="BirthDate" FontSize="18" Grid.Column="2" Grid.Row="2"></TextBox>
-                        <TextBox x:Name="DeathDate" FontSize="18" Grid.Column="2" Grid.Row="3"></TextBox>
-                        <ComboBox ItemsSource="{Binding PossibleFathers, Mode=TwoWay}" SelectedValue="{Binding Father}" Grid.Column="2" Grid.Row="4" DisplayMemberPath="Name" FontSize="18"></ComboBox>
-                        <ComboBox ItemsSource="{Binding PossibleMothers, Mode=TwoWay}" SelectedValue="{Binding Mother}" Grid.Column="2" Grid.Row="5" DisplayMemberPath="Name" FontSize="18"></ComboBox>
-                        <ComboBox ItemsSource="{Binding GenderTypes, Mode=OneWay}" SelectedValue="{Binding Gender, Mode=TwoWay}" Grid.Column="2" Grid.Row="6" FontSize="18"></ComboBox>
-                    </Grid>
-                    <Button x:Name="AddPersonToDatabase" Content="Dodaj" Width="100" Height="30" Margin="0 270 0 0"/>
-                </Grid>
+    <StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="15"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="15"/>
+            </Grid.RowDefinitions>
+            <Button x:Name="LoadAddPersonView" Margin="3" Content="Dodaj osobę" Grid.Column="1" Grid.Row="1"/>
+            <Button x:Name="LoadModifyPersonView" Margin="3" Content="Modyfikuj osobę" Grid.Column="2" Grid.Row="1"/>
+            <Button Margin="3" Content="Usuń osobę" Grid.Column="3" Grid.Row="1"/>
+            <Button Margin="3" Content="Wspólni przodkowie" Grid.Column="4" Grid.Row="1"/>
+            <Button Margin="3" Content="Spadkobiercy" Grid.Column="5" Grid.Row="1"/>
+            <Button Margin="3" Content="Drzewo potomków" Grid.Column="6" Grid.Row="1"/>
+            <!--<TabControl>
+            <TabItem Header="Dodaj osobę" Tag="1" >
+                <ContentControl x:Name="LoadAddPersonView" cal:View.Model="{Binding ActiveItem}"/>
             </TabItem>
-            <TabItem Header="Modyfikuj osobę">
-                <ContentControl x:Name="ActiveItem"/>
+            <TabItem Header="Modyfikuj osobę" Tag="2" cal:View.Model="{Binding ActiveItem}">
             </TabItem>
-            <TabItem Header="Usuń osobę">
+            <TabItem Header="Usuń osobę" Tag="3" cal:View.Model="{Binding ActiveItem}">
             </TabItem>
-            <TabItem Header="Spadkobiercy">
+            <TabItem Header="Wspólni przodkowie" Tag="4" cal:View.Model="{Binding ActiveItem}">
             </TabItem>
-            <TabItem Header="Wspólni przodkowie">
+            <TabItem Header="Spadkobiercy" Tag="5" cal:View.Model="{Binding ActiveItem}">
             </TabItem>
-            <TabItem Header="Drzewo potomków">
+            <TabItem Header="Drzewo potomków" Tag="6" cal:View.Model="{Binding ActiveItem}">
             </TabItem>
-        </TabControl>
-    </Grid>
+        </TabControl>-->
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="595"/>
+                <ColumnDefinition Width="15"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="311"/>
+                <RowDefinition Height="15"/>
+            </Grid.RowDefinitions>
+            <ContentControl x:Name="ActiveItem" Grid.Column="1" Grid.Row="1"/>
+        </Grid>
+    </StackPanel>
 </Window>
