@@ -162,6 +162,24 @@ namespace NBDGenealogy.ViewModels
             possibleFathers.Add(new PersonModel("-brak-"));
             return possibleFathers;
         }
+        public BindableCollection<PersonModel> AllPossibleMothers(PersonModel selectedPerson, DateTime birthDate)
+        {
+            IObjectContainer db = Db4oFactory.OpenFile("person.data");
+            BindableCollection<PersonModel> possibleMothers = new BindableCollection<PersonModel>();
+            var allWomenInDatabase = db.QueryByExample(new PersonModel(EGender.Female));
+            foreach (var woman in allWomenInDatabase)
+            {
+                possibleMothers.Add((PersonModel)woman);
+            }
+            db.Close();
+            possibleMothers = PossibleMothersHelper.RemovePossiblyWrongImportedMothers(possibleMothers) as BindableCollection<PersonModel>;
+            if(selectedPerson != null)
+            {
+                possibleMothers = PossibleMothersHelper.RemovePossiblyMothersWithWrongAge(possibleMothers, birthDate) as BindableCollection<PersonModel>;
+            }
+            possibleMothers.Add(new PersonModel("-brak-"));
+            return possibleMothers;
+        }
         #endregion
     }
 }
