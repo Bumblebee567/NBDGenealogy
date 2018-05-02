@@ -35,7 +35,13 @@ namespace NBDGenealogy.ViewModels
 
         public BindableCollection<PersonModel> PossibleMothers
         {
-            get { return _possibleMothers; }
+            get
+            {
+                if (BirthDate == null)
+                    return AllPossibleMothers(_selectedPerson, _selectedPerson.BirthDate);
+                else
+                    return AllPossibleMothers(_selectedPerson, BirthDate.Value);
+            }
             set
             {
                 _possibleMothers = value;
