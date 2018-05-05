@@ -27,5 +27,9 @@ namespace NBDGenealogy.ViewModels
         {
             ActivateItem(new ModifyPersonViewModel());
         }
+        public void LoadCommonAncestorsView()
+        {
+            ActivateItem(new CommonAncestorsViewModel());
+        }
     }
 }
