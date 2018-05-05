@@ -26,7 +26,7 @@ namespace NBDGenealogy.Helpers
             List<PersonModel> fathersToRemove = new List<PersonModel>();
             foreach (var person in possibleFathers)
             {
-                int differenceInDays = (int)childBirthDate.Subtract(person.BirthDate).TotalDays;
+                int differenceInDays = (int)childBirthDate.Subtract(person.BirthDate.Value).TotalDays;
 
                 if (differenceInDays > seventyYearsInTotalDays || differenceInDays < twelveYearsInTotalDays)
                 {

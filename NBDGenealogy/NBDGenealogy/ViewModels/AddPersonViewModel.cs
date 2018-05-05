@@ -15,8 +15,8 @@ namespace NBDGenealogy.ViewModels
     class AddPersonViewModel : Screen
     {
         private string _name;
-        private DateTime _birthDate = DateTime.MinValue;
-        private DateTime _deathDate = DateTime.MinValue;
+        private DateTime? _birthDate;
+        private DateTime? _deathDate;
         private EGender? _gender = null;
         private PersonModel _father;
         private PersonModel _mother;
@@ -32,7 +32,7 @@ namespace NBDGenealogy.ViewModels
                 NotifyOfPropertyChange(() => Name);
             }
         }
-        public DateTime BirthDate
+        public DateTime? BirthDate
         {
             get { return _birthDate; }
             set
@@ -44,7 +44,7 @@ namespace NBDGenealogy.ViewModels
                 NotifyOfPropertyChange(() => PossibleMothers);
             }
         }
-        public DateTime DeathDate
+        public DateTime? DeathDate
         {
             get { return _deathDate; }
             set
@@ -123,8 +123,8 @@ namespace NBDGenealogy.ViewModels
             }
             db.Close();
             possibleFathers = PossibleFathersHelper.RemovePossiblyWrongImportedFathers(possibleFathers);
-            if (BirthDate != DateTime.MinValue)
-                possibleFathers = PossibleFathersHelper.RemovePossiblyFathersWithWrongAge(possibleFathers, BirthDate);
+            if (BirthDate != null)
+                possibleFathers = PossibleFathersHelper.RemovePossiblyFathersWithWrongAge(possibleFathers, BirthDate.Value);
             return possibleFathers;
         }
         public ObservableCollection<PersonModel> AllPossibleMothers()
@@ -138,8 +138,8 @@ namespace NBDGenealogy.ViewModels
             }
             db.Close();
             possibleMothers = PossibleMothersHelper.RemovePossiblyWrongImportedMothers(possibleMothers);
-            if (BirthDate != DateTime.MinValue)
-                possibleMothers = PossibleMothersHelper.RemovePossiblyMothersWithWrongAge(possibleMothers, BirthDate);
+            if (BirthDate != null)
+                possibleMothers = PossibleMothersHelper.RemovePossiblyMothersWithWrongAge(possibleMothers, BirthDate.Value);
             return possibleMothers;
         }
         public void AddPersonToDatabase()

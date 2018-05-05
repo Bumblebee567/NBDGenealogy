@@ -38,7 +38,7 @@ namespace NBDGenealogy.ViewModels
             get
             {
                 if (BirthDate == null)
-                    return AllPossibleMothers(_selectedPerson, _selectedPerson.BirthDate);
+                    return AllPossibleMothers(_selectedPerson, _selectedPerson.BirthDate.Value);
                 else
                     return AllPossibleMothers(_selectedPerson, BirthDate.Value);
             }
@@ -53,7 +53,7 @@ namespace NBDGenealogy.ViewModels
             get
             {
                 if (BirthDate == null)
-                    return AllPossibleFathers(_selectedPerson, _selectedPerson.BirthDate);
+                    return AllPossibleFathers(_selectedPerson, _selectedPerson.BirthDate.Value);
                 else
                     return AllPossibleFathers(_selectedPerson, BirthDate.Value);
             }
@@ -66,22 +66,38 @@ namespace NBDGenealogy.ViewModels
         public EGender? Gender
         {
             get { return _gender; }
-            set { _gender = value; }
+            set
+            {
+                _gender = value;
+                NotifyOfPropertyChange(() => Gender);
+            }
         }
         public PersonModel Mother
         {
             get { return _mother; }
-            set { _mother = value; }
+            set
+            {
+                _mother = value;
+                NotifyOfPropertyChange(() => Mother);
+            }
         }
         public PersonModel Father
         {
             get { return _father; }
-            set { _father = value; }
+            set
+            {
+                _father = value;
+                NotifyOfPropertyChange(() => Father);
+            }
         }
         public DateTime? DeathDate
         {
             get { return _deathDate; }
-            set { _deathDate = value; }
+            set
+            {
+                _deathDate = value;
+                NotifyOfPropertyChange(() => DeathDate);
+            }
         }
         public DateTime? BirthDate
         {
@@ -144,8 +160,10 @@ namespace NBDGenealogy.ViewModels
             db.Close();
             foreach (var person in allPeopleInDatabse)
             {
-                person.BirthDate.ToShortDateString();
-                person.DeathDate.ToShortDateString();
+                if(person.BirthDate != null)
+                    person.BirthDate.Value.ToShortDateString();
+                if(person.DeathDate != null)
+                    person.DeathDate.Value.ToShortDateString();
             }
             return allPeopleInDatabse;
         }
