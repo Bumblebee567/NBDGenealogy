@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace NBDGenealogy.ViewModels
 {
@@ -120,9 +121,9 @@ namespace NBDGenealogy.ViewModels
                 BirthDate = SelectedPerson.BirthDate;
                 DeathDate = SelectedPerson.DeathDate;
                 Gender = SelectedPerson.Gender;
-                if(SelectedPerson.Father != null)
+                if (SelectedPerson.Father != null)
                     Father.Name = SelectedPerson.Father;
-                if(SelectedPerson.Mother != null)
+                if (SelectedPerson.Mother != null)
                     Mother.Name = SelectedPerson.Mother;
                 NotifyOfPropertyChange(() => SelectedPerson);
             }
@@ -160,9 +161,9 @@ namespace NBDGenealogy.ViewModels
             db.Close();
             foreach (var person in allPeopleInDatabse)
             {
-                if(person.BirthDate != null)
+                if (person.BirthDate != null)
                     person.BirthDate.Value.ToShortDateString();
-                if(person.DeathDate != null)
+                if (person.DeathDate != null)
                     person.DeathDate.Value.ToShortDateString();
             }
             return allPeopleInDatabse;
@@ -197,12 +198,97 @@ namespace NBDGenealogy.ViewModels
             }
             db.Close();
             possibleMothers = PossibleMothersHelper.RemovePossiblyWrongImportedMothers(possibleMothers) as BindableCollection<PersonModel>;
-            if(selectedPerson != null)
+            if (selectedPerson != null)
             {
                 possibleMothers = PossibleMothersHelper.RemovePossiblyMothersWithWrongAge(possibleMothers, birthDate) as BindableCollection<PersonModel>;
             }
             possibleMothers.Add(new PersonModel("-brak-"));
             return possibleMothers;
+        }
+        public void SaveModifiedPersonToDatabase()
+        {
+            IObjectContainer db = Db4oFactory.OpenFile("person.data");
+            var personToModifiy = db.QueryByExample(new PersonModel(SelectedPerson.Name)).Next() as PersonModel;
+            var allPeopleInDatabase = db.QueryByExample(new PersonModel());
+            List<PersonModel> personHelperList = new List<PersonModel>();
+            foreach (var person in allPeopleInDatabase)
+            {
+                var p = (PersonModel)person;
+                personHelperList.Add(p);
+            }
+            if (Name == null)
+            {
+                MessageBox.Show("Nie można dodać osoby bez imienia", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                db.Close();
+            }
+            else if (Name != SelectedPerson.Name && personHelperList.Any(x => x.Name == Name))
+            {
+                MessageBox.Show("Osoba z podanym imieniem jest już w bazie", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                db.Close();
+            }
+            else
+            {
+                personToModifiy.Name = Name;
+                personToModifiy.BirthDate = BirthDate;
+                personToModifiy.DeathDate = DeathDate;
+
+                if (Gender == EGender.brak)
+                    personToModifiy.Gender = null;
+                else
+                    personToModifiy.Gender = Gender;
+
+                if (Father != null)
+                {
+                    if (Father != null && Father.Name == "-brak-")
+                    {
+                        personToModifiy.Father = String.Empty;
+                        var previousFather = db.QueryByExample(new PersonModel(SelectedPerson.Father)).Next() as PersonModel;
+                        previousFather.Children.Remove(personToModifiy.Name);
+                        if (previousFather.Children.Count == 0)
+                            previousFather.Children = null;
+                        db.Store(previousFather);
+                    }
+                    else
+                    {
+                        personToModifiy.Father = Father.Name;
+                        var newFather = db.QueryByExample(new PersonModel(Father.Name)).Next() as PersonModel;
+                        if (newFather.Children == null)
+                            newFather.Children = new List<string>();
+                        newFather.Children.Add(Name);
+                        db.Store(newFather);
+                    }
+                }
+                if (Mother != null)
+                {
+                    if (Mother.Name == "-brak-")
+                    {
+                        personToModifiy.Mother = String.Empty;
+                        var previousMother = db.QueryByExample(new PersonModel(SelectedPerson.Mother)).Next() as PersonModel;
+                        previousMother.Children.Remove(personToModifiy.Name);
+                        if (previousMother.Children.Count == 0)
+                            previousMother.Children = null;
+                        db.Store(previousMother);
+                    }
+                    else
+                    {
+                        personToModifiy.Mother = Mother.Name;
+                        var newMother = db.QueryByExample(new PersonModel(Mother.Name)).Next() as PersonModel;
+                        if (newMother.Children == null)
+                            newMother.Children = new List<string>();
+                        newMother.Children.Add(Name);
+                        db.Store(newMother);
+                    }
+                }
+            }
+            db.Store(personToModifiy);
+            db.Close();
+            NotifyOfPropertyChange(() => AllPeopleInDatabase);
+            Name = null;
+            Father = null;
+            Mother = null;
+            Gender = null;
+            BirthDate = null;
+            DeathDate = null;
         }
         #endregion
     }

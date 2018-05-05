@@ -172,8 +172,9 @@ namespace NBDGenealogy.ViewModels
                         Name = Name,
                         BirthDate = BirthDate,
                         DeathDate = DeathDate,
-                        Gender = Gender
                     };
+                    if (Gender == EGender.brak)
+                        newPerson.Gender = null;
                     if (Father != null)
                         newPerson.Father = Father.Name;
                     if (Mother != null)
@@ -203,8 +204,8 @@ namespace NBDGenealogy.ViewModels
                     Name = null;
                     Father = null;
                     Mother = null;
-                    BirthDate = DateTime.MinValue;
-                    DeathDate = DateTime.MinValue;
+                    BirthDate = null;
+                    DeathDate = null;
                     Gender = null;
                     NotifyOfPropertyChange(nameof(PossibleFathers));
                     NotifyOfPropertyChange(nameof(PossibleMothers));

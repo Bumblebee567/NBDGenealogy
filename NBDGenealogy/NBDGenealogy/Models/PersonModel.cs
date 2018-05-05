@@ -9,7 +9,8 @@ namespace NBDGenealogy.Models
     public enum EGender
     {
         Male,
-        Female
+        Female,
+        brak
     }
     public class PersonModel
     {

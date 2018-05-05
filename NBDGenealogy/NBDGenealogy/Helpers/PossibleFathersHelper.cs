@@ -12,7 +12,7 @@ namespace NBDGenealogy.Helpers
     {
         public static ObservableCollection<PersonModel> RemovePossiblyWrongImportedFathers(ObservableCollection<PersonModel> importedFathers)
         {
-            var wrongImported = importedFathers.Where(x => x.Gender == EGender.Female).ToList();
+            var wrongImported = importedFathers.Where(x => x.Gender == EGender.Female || x.Gender == null).ToList();
             foreach (var wi in wrongImported)
             {
                 importedFathers.Remove(wi);
@@ -26,11 +26,14 @@ namespace NBDGenealogy.Helpers
             List<PersonModel> fathersToRemove = new List<PersonModel>();
             foreach (var person in possibleFathers)
             {
-                int differenceInDays = (int)childBirthDate.Subtract(person.BirthDate.Value).TotalDays;
-
-                if (differenceInDays > seventyYearsInTotalDays || differenceInDays < twelveYearsInTotalDays)
+                if (person.BirthDate != null)
                 {
-                    fathersToRemove.Add(person);
+                    int differenceInDays = (int)childBirthDate.Subtract(person.BirthDate.Value).TotalDays;
+
+                    if (differenceInDays > seventyYearsInTotalDays || differenceInDays < twelveYearsInTotalDays)
+                    {
+                        fathersToRemove.Add(person);
+                    }
                 }
             }
             foreach (var fatherToRemove in fathersToRemove)
@@ -39,6 +42,23 @@ namespace NBDGenealogy.Helpers
             }
             return possibleFathers;
         }
+        //public static ObservableCollection<PersonModel> RemoveDescendantsFromPossibleFathers(ObservableCollection<PersonModel> importedFathers, PersonModel selectedPerson)
+        //{
+        //    List<PersonModel> descendants = new List<PersonModel>();
+        //    bool isAnyChild = true;
+        //    PersonModel researchedPerson = selectedPerson;
+        //    while (isAnyChild)
+        //    {
+        //        if(researchedPerson.Children == null)
+        //        {
+        //            isAnyChild = false;
+        //        }
+        //        else
+        //        {
+
+        //        }
+        //    }
+        //}
         public static bool IsOriginalFatherCorrectAfterBirthDateModification(DateTime newBirthDate, DateTime selectedPersonFatherBirthDate)
         {
             const int twelveYearsInTotalDays = 4380;
