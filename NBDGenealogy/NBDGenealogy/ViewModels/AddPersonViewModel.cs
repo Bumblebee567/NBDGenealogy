@@ -175,6 +175,8 @@ namespace NBDGenealogy.ViewModels
                     };
                     if (Gender == EGender.brak)
                         newPerson.Gender = null;
+                    else
+                        newPerson.Gender = Gender;
                     if (Father != null)
                         newPerson.Father = Father.Name;
                     if (Mother != null)
