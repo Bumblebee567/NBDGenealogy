@@ -40,25 +40,27 @@ namespace NBDGenealogy.Helpers
             {
                 possibleFathers.Remove(fatherToRemove);
             }
+            fathersToRemove.Clear();
+
+            foreach (var person in possibleFathers)
+            {
+                if(person.DeathDate != null)
+                {
+                    int differenceBetweenFathersDeathAndChildBirth = (int)childBirthDate.Subtract(person.DeathDate.Value).TotalDays;
+
+                    if(differenceBetweenFathersDeathAndChildBirth > 270)
+                    {
+                        fathersToRemove.Add(person);
+                    }
+                }
+            }
+            foreach (var fatherToRemove in fathersToRemove)
+            {
+                possibleFathers.Remove(fatherToRemove);
+            }
             return possibleFathers;
         }
-        //public static ObservableCollection<PersonModel> RemoveDescendantsFromPossibleFathers(ObservableCollection<PersonModel> importedFathers, PersonModel selectedPerson)
-        //{
-        //    List<PersonModel> descendants = new List<PersonModel>();
-        //    bool isAnyChild = true;
-        //    PersonModel researchedPerson = selectedPerson;
-        //    while (isAnyChild)
-        //    {
-        //        if(researchedPerson.Children == null)
-        //        {
-        //            isAnyChild = false;
-        //        }
-        //        else
-        //        {
-
-        //        }
-        //    }
-        //}
+        
         public static bool IsOriginalFatherCorrectAfterBirthDateModification(DateTime newBirthDate, DateTime selectedPersonFatherBirthDate)
         {
             const int twelveYearsInTotalDays = 4380;
