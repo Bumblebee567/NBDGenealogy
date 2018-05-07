@@ -32,5 +32,9 @@ namespace NBDGenealogy.Models
         {
             Name = name;
         }
+        public PersonModel(PersonModel father)
+        {
+            Father = father.Name;
+        }
     }
 }

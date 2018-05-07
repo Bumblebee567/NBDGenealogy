@@ -298,7 +298,42 @@ namespace NBDGenealogy.ViewModels
                 if (Gender == EGender.brak)
                     personToModifiy.Gender = null;
                 else
+                {
                     personToModifiy.Gender = Gender;
+                    if (SelectedPerson.Gender != Gender)
+                    {
+                        if (personToModifiy.Children != null)
+                        {
+                            personToModifiy.Children = null;
+                            if (Gender == EGender.Male)
+                            {
+                                var personsChildren = db.QueryByExample(new PersonModel { Mother = Name }) as List<PersonModel>;
+                                foreach (var child in personsChildren)
+                                {
+                                    child.Mother = String.Empty;
+                                    db.Store(child);
+                                }
+                            }
+                            else
+                            {
+                                var personsChildren = db.QueryByExample(new PersonModel { Father = Name });
+                                List<PersonModel> children = new List<PersonModel>();
+                                foreach (var child in personsChildren)
+                                {
+                                    children.Add(child as PersonModel);
+                                }
+                                foreach (var child in children)
+                                {
+                                    child.Father = String.Empty;
+                                }
+                                foreach (var child in personsChildren)
+                                {
+                                    db.Store(child);
+                                }
+                            }
+                        }
+                    }
+                }
 
                 if (Father != null)
                 {
