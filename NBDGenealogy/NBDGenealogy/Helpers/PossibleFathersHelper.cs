@@ -65,7 +65,8 @@ namespace NBDGenealogy.Helpers
             var personsDescendants = DescendantsHelper.GetPersonDescendants(person);
             foreach (var descendant in personsDescendants)
             {
-                possibleFathers.Remove(descendant);
+                var item = possibleFathers.Where(x => x.Name == descendant.Name).First();
+                possibleFathers.Remove(item);
             }
             return possibleFathers;
         }

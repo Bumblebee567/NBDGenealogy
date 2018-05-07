@@ -13,14 +13,15 @@ namespace NBDGenealogy.Helpers
         public static List<PersonModel> GetPersonDescendants(PersonModel person)
         {
             List<PersonModel> personDescendants = new List<PersonModel>();
-            if (person.Children != null)
+
+            foreach (var child in person.Children)
             {
-                foreach (var child in person.Children)
+                IObjectContainer db = Db4oFactory.OpenFile("person.data");
+                var childAsPersonModel = db.QueryByExample(new PersonModel(child)).Next() as PersonModel;
+                db.Close();
+                personDescendants.Add(childAsPersonModel);
+                if (childAsPersonModel.Children != null)
                 {
-                    IObjectContainer db = Db4oFactory.OpenFile("person.data");
-                    var childAsPersonModel = db.QueryByExample(new PersonModel(child)).Next() as PersonModel;
-                    db.Close();
-                    personDescendants.Add(childAsPersonModel);
                     foreach (var childsChild in childAsPersonModel.Children)
                     {
                         db = Db4oFactory.OpenFile("person.data");

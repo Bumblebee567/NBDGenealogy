@@ -53,7 +53,9 @@ namespace NBDGenealogy.ViewModels
         {
             get
             {
-                if (BirthDate == null)
+                if (_selectedPerson.BirthDate == null)
+                    return AllPossibleFathers(_selectedPerson);
+                else if (BirthDate == null)
                     return AllPossibleFathers(_selectedPerson, _selectedPerson.BirthDate.Value);
                 else
                     return AllPossibleFathers(_selectedPerson, BirthDate.Value);
@@ -117,6 +119,7 @@ namespace NBDGenealogy.ViewModels
             set
             {
                 _selectedPerson = value;
+                NotifyOfPropertyChange(() => SelectedPerson);
                 Name = SelectedPerson.Name;
                 BirthDate = SelectedPerson.BirthDate;
                 DeathDate = SelectedPerson.DeathDate;
@@ -125,7 +128,6 @@ namespace NBDGenealogy.ViewModels
                     Father.Name = SelectedPerson.Father;
                 if (SelectedPerson.Mother != null)
                     Mother.Name = SelectedPerson.Mother;
-                NotifyOfPropertyChange(() => SelectedPerson);
             }
         }
         public BindableCollection<PersonModel> AllPeopleInDatabase
@@ -186,6 +188,35 @@ namespace NBDGenealogy.ViewModels
                 possibleFathers = PossibleFathersHelper.RemoveDescendantsFromPossibleFathers(possibleFathers, selectedPerson) as BindableCollection<PersonModel>;
             }
             possibleFathers.Add(new PersonModel("-brak-"));
+            return possibleFathers;
+        }
+        public BindableCollection<PersonModel> AllPossibleFathers(PersonModel person)
+        {
+            IObjectContainer db = Db4oFactory.OpenFile("person.data");
+            BindableCollection<PersonModel> possibleFathers = new BindableCollection<PersonModel>();
+            var allMenInDatabase = db.QueryByExample(new PersonModel(EGender.Male));
+            foreach (var man in allMenInDatabase)
+            {
+                possibleFathers.Add((PersonModel)man);
+            }
+            db.Close();
+            List<PersonModel> menWithBirthDate = new List<PersonModel>();
+            foreach (var man in possibleFathers)
+            {
+                if (man.BirthDate != null)
+                    menWithBirthDate.Add(man);
+            }
+            foreach (var man in menWithBirthDate)
+            {
+                possibleFathers.Remove(man);
+            }
+            possibleFathers = PossibleFathersHelper.RemovePossiblyWrongImportedFathers(possibleFathers) as BindableCollection<PersonModel>;
+            possibleFathers = PossibleFathersHelper.RemoveDescendantsFromPossibleFathers(possibleFathers, person) as BindableCollection<PersonModel>;
+            var item = possibleFathers.Where(x => x.Name == person.Name).First();
+            if (item != null)
+            {
+                possibleFathers.Remove(item);
+            }
             return possibleFathers;
         }
         public BindableCollection<PersonModel> AllPossibleMothers(PersonModel selectedPerson, DateTime birthDate)
