@@ -60,7 +60,15 @@ namespace NBDGenealogy.Helpers
             }
             return possibleFathers;
         }
-        
+        public static ObservableCollection<PersonModel> RemoveDescendantsFromPossibleFathers(ObservableCollection<PersonModel> possibleFathers, PersonModel person)
+        {
+            var personsDescendants = DescendantsHelper.GetPersonDescendants(person);
+            foreach (var descendant in personsDescendants)
+            {
+                possibleFathers.Remove(descendant);
+            }
+            return possibleFathers;
+        }
         public static bool IsOriginalFatherCorrectAfterBirthDateModification(DateTime newBirthDate, DateTime selectedPersonFatherBirthDate)
         {
             const int twelveYearsInTotalDays = 4380;

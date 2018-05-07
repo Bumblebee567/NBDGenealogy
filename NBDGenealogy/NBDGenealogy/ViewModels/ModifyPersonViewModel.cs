@@ -183,6 +183,7 @@ namespace NBDGenealogy.ViewModels
             {
                 if (selectedPerson.BirthDate != DateTime.MinValue)
                     possibleFathers = PossibleFathersHelper.RemovePossiblyFathersWithWrongAge(possibleFathers, birthDate) as BindableCollection<PersonModel>;
+                possibleFathers = PossibleFathersHelper.RemoveDescendantsFromPossibleFathers(possibleFathers, selectedPerson) as BindableCollection<PersonModel>;
             }
             possibleFathers.Add(new PersonModel("-brak-"));
             return possibleFathers;

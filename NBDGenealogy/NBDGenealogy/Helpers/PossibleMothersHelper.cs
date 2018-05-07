@@ -26,11 +26,14 @@ namespace NBDGenealogy.Helpers
             List<PersonModel> mothersToRemove = new List<PersonModel>();
             foreach (var person in possibleMothers)
             {
-                int differenceInDays = (int)childBirthDate.Subtract(person.BirthDate.Value).TotalDays;
-
-                if (differenceInDays > sixtyYearsInTotalDays || differenceInDays < tenYearsInTotalDays)
+                if (person.BirthDate != null)
                 {
-                    mothersToRemove.Add(person);
+                    int differenceInDays = (int)childBirthDate.Subtract(person.BirthDate.Value).TotalDays;
+
+                    if (differenceInDays > sixtyYearsInTotalDays || differenceInDays < tenYearsInTotalDays)
+                    {
+                        mothersToRemove.Add(person);
+                    }
                 }
             }
             foreach (var motherToRemove in mothersToRemove)

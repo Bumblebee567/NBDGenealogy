@@ -105,6 +105,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Helpers\CommonAncestorsHelper.cs" />
+    <Compile Include="Helpers\DescendantsHelper.cs" />
     <Compile Include="Helpers\PossibleFathersHelper.cs" />
     <Compile Include="Helpers\PossibleMothersHelper.cs" />
     <Compile Include="Models\PersonModel.cs" />
