@@ -29,6 +29,7 @@ namespace NBDGenealogy.Helpers
                             db = Db4oFactory.OpenFile("person.data");
                             var childsChildAsPersonModel = db.QueryByExample(new PersonModel(childsChild)).Next() as PersonModel;
                             db.Close();
+                            personDescendants.Add(childsChildAsPersonModel);
                             personDescendants.AddRange(GetPersonDescendants(childsChildAsPersonModel));
                         }
                     }

@@ -38,7 +38,9 @@ namespace NBDGenealogy.ViewModels
         {
             get
             {
-                if (BirthDate == null)
+                if (_selectedPerson.BirthDate == null)
+                    return AllPossibleMothers(_selectedPerson);
+                else if (BirthDate == null)
                     return AllPossibleMothers(_selectedPerson, _selectedPerson.BirthDate.Value);
                 else
                     return AllPossibleMothers(_selectedPerson, BirthDate.Value);
@@ -183,8 +185,7 @@ namespace NBDGenealogy.ViewModels
             possibleFathers = PossibleFathersHelper.RemovePossiblyWrongImportedFathers(possibleFathers) as BindableCollection<PersonModel>;
             if (selectedPerson != null)
             {
-                if (selectedPerson.BirthDate != DateTime.MinValue)
-                    possibleFathers = PossibleFathersHelper.RemovePossiblyFathersWithWrongAge(possibleFathers, birthDate) as BindableCollection<PersonModel>;
+                possibleFathers = PossibleFathersHelper.RemovePossiblyFathersWithWrongAge(possibleFathers, birthDate) as BindableCollection<PersonModel>;
                 possibleFathers = PossibleFathersHelper.RemoveDescendantsFromPossibleFathers(possibleFathers, selectedPerson) as BindableCollection<PersonModel>;
             }
             possibleFathers.Add(new PersonModel("-brak-"));
@@ -219,6 +220,35 @@ namespace NBDGenealogy.ViewModels
             }
             return possibleFathers;
         }
+        public BindableCollection<PersonModel> AllPossibleMothers(PersonModel person)
+        {
+            IObjectContainer db = Db4oFactory.OpenFile("person.data");
+            BindableCollection<PersonModel> possibleMothers = new BindableCollection<PersonModel>();
+            var allWomenInDatabase = db.QueryByExample(new PersonModel(EGender.Female));
+            foreach (var man in allWomenInDatabase)
+            {
+                possibleMothers.Add((PersonModel)man);
+            }
+            db.Close();
+            List<PersonModel> womenWithBirthDate = new List<PersonModel>();
+            foreach (var woman in possibleMothers)
+            {
+                if (woman.BirthDate != null)
+                    womenWithBirthDate.Add(woman);
+            }
+            foreach (var woman in womenWithBirthDate)
+            {
+                possibleMothers.Remove(woman);
+            }
+            possibleMothers = PossibleMothersHelper.RemovePossiblyWrongImportedMothers(possibleMothers) as BindableCollection<PersonModel>;
+            possibleMothers = PossibleMothersHelper.RemoveDescendantsFromPossibleMothers(possibleMothers, person) as BindableCollection<PersonModel>;
+            var item = possibleMothers.Where(x => x.Name == person.Name).First();
+            if (item != null)
+            {
+                possibleMothers.Remove(item);
+            }
+            return possibleMothers;
+        }
         public BindableCollection<PersonModel> AllPossibleMothers(PersonModel selectedPerson, DateTime birthDate)
         {
             IObjectContainer db = Db4oFactory.OpenFile("person.data");
@@ -233,6 +263,7 @@ namespace NBDGenealogy.ViewModels
             if (selectedPerson != null)
             {
                 possibleMothers = PossibleMothersHelper.RemovePossiblyMothersWithWrongAge(possibleMothers, birthDate) as BindableCollection<PersonModel>;
+                possibleMothers = PossibleMothersHelper.RemoveDescendantsFromPossibleMothers(possibleMothers, selectedPerson) as BindableCollection<PersonModel>;
             }
             possibleMothers.Add(new PersonModel("-brak-"));
             return possibleMothers;
@@ -292,7 +323,7 @@ namespace NBDGenealogy.ViewModels
                 }
                 else
                 {
-                    if(SelectedPerson.Father != String.Empty && SelectedPerson.BirthDate != BirthDate)
+                    if (SelectedPerson.Father != String.Empty && SelectedPerson.BirthDate != BirthDate)
                     {
                         MessageBox.Show("Ojciec musi zostać wybrany", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
                         db.Close();

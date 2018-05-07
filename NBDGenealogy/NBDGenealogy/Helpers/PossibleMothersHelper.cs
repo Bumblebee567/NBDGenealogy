@@ -26,6 +26,16 @@ namespace NBDGenealogy.Helpers
             List<PersonModel> mothersToRemove = new List<PersonModel>();
             foreach (var person in possibleMothers)
             {
+                if (person.DeathDate != null)
+                {
+                    int differenceInDays = (int)childBirthDate.Subtract(person.DeathDate.Value).TotalDays;
+
+                    if(differenceInDays > 0)
+                    {
+                        mothersToRemove.Add(person);
+                        continue;
+                    }
+                }
                 if (person.BirthDate != null)
                 {
                     int differenceInDays = (int)childBirthDate.Subtract(person.BirthDate.Value).TotalDays;
@@ -39,6 +49,16 @@ namespace NBDGenealogy.Helpers
             foreach (var motherToRemove in mothersToRemove)
             {
                 possibleMothers.Remove(motherToRemove);
+            }
+            return possibleMothers;
+        }
+        public static ObservableCollection<PersonModel> RemoveDescendantsFromPossibleMothers(ObservableCollection<PersonModel> possibleMothers, PersonModel person)
+        {
+            var personsDescendants = DescendantsHelper.GetPersonDescendants(person);
+            foreach (var descendant in personsDescendants)
+            {
+                var item = possibleMothers.Where(x => x.Name == descendant.Name).First();
+                possibleMothers.Remove(item);
             }
             return possibleMothers;
         }
