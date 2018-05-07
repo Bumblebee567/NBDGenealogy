@@ -290,6 +290,15 @@ namespace NBDGenealogy.ViewModels
                         db.Store(newFather);
                     }
                 }
+                else
+                {
+                    if(SelectedPerson.Father != String.Empty && SelectedPerson.BirthDate != BirthDate)
+                    {
+                        MessageBox.Show("Ojciec musi zostać wybrany", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                        db.Close();
+                        return;
+                    }
+                }
                 if (Mother != null)
                 {
                     if (Mother.Name == "-brak-")
@@ -309,6 +318,15 @@ namespace NBDGenealogy.ViewModels
                             newMother.Children = new List<string>();
                         newMother.Children.Add(Name);
                         db.Store(newMother);
+                    }
+                }
+                else
+                {
+                    if (SelectedPerson.Mother != String.Empty && SelectedPerson.BirthDate != BirthDate)
+                    {
+                        MessageBox.Show("Matka musi zostać wybrana", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                        db.Close();
+                        return;
                     }
                 }
             }

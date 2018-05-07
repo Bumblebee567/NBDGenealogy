@@ -14,20 +14,23 @@ namespace NBDGenealogy.Helpers
         {
             List<PersonModel> personDescendants = new List<PersonModel>();
 
-            foreach (var child in person.Children)
+            if (person.Children != null)
             {
-                IObjectContainer db = Db4oFactory.OpenFile("person.data");
-                var childAsPersonModel = db.QueryByExample(new PersonModel(child)).Next() as PersonModel;
-                db.Close();
-                personDescendants.Add(childAsPersonModel);
-                if (childAsPersonModel.Children != null)
+                foreach (var child in person.Children)
                 {
-                    foreach (var childsChild in childAsPersonModel.Children)
+                    IObjectContainer db = Db4oFactory.OpenFile("person.data");
+                    var childAsPersonModel = db.QueryByExample(new PersonModel(child)).Next() as PersonModel;
+                    db.Close();
+                    personDescendants.Add(childAsPersonModel);
+                    if (childAsPersonModel.Children != null)
                     {
-                        db = Db4oFactory.OpenFile("person.data");
-                        var childsChildAsPersonModel = db.QueryByExample(new PersonModel(childsChild)).Next() as PersonModel;
-                        db.Close();
-                        personDescendants.AddRange(GetPersonDescendants(childsChildAsPersonModel));
+                        foreach (var childsChild in childAsPersonModel.Children)
+                        {
+                            db = Db4oFactory.OpenFile("person.data");
+                            var childsChildAsPersonModel = db.QueryByExample(new PersonModel(childsChild)).Next() as PersonModel;
+                            db.Close();
+                            personDescendants.AddRange(GetPersonDescendants(childsChildAsPersonModel));
+                        }
                     }
                 }
             }
