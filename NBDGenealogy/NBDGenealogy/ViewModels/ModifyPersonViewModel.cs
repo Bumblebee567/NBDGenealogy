@@ -302,7 +302,21 @@ namespace NBDGenealogy.ViewModels
             {
                 personToModifiy.Name = Name;
                 personToModifiy.BirthDate = BirthDate;
-                personToModifiy.DeathDate = DeathDate;
+
+                if (DeathDate != null)
+                {
+                    bool isDeathDatePossible = IsDeathDatePossible(DeathDate.Value, personToModifiy, db);
+                    if (isDeathDatePossible == true)
+                    {
+                        personToModifiy.DeathDate = DeathDate;
+                    }
+                    else
+                    {
+                        db.Close();
+                        MessageBox.Show("Nie można ustawić podanej daty śmierci", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                }
 
                 if (Gender == EGender.brak)
                 {
@@ -481,6 +495,30 @@ namespace NBDGenealogy.ViewModels
             Gender = null;
             BirthDate = null;
             DeathDate = null;
+        }
+        public bool IsDeathDatePossible(DateTime deathDate, PersonModel person, IObjectContainer db)
+        {
+            List<PersonModel> personChildren = new List<PersonModel>();
+            if (person.Children != null)
+            {
+                foreach (var child in person.Children)
+                {
+                    var p = db.QueryByExample(new PersonModel(child)).Next() as PersonModel;
+                    personChildren.Add(p);
+                }
+                if (personChildren.Any(x => x.BirthDate > deathDate))
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return true;
+            }
         }
         #endregion
     }
