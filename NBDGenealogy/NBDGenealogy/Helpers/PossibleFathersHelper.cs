@@ -73,7 +73,7 @@ namespace NBDGenealogy.Helpers
             }
             foreach (var descendant in personsDescendants)
             {
-                var d = possibleFathers.Where(x => x.Name == descendant.Name).First();
+                var d = possibleFathers.Where(x => x.Name == descendant.Name).FirstOrDefault();
                 possibleFathers.Remove(d);
             }
             return possibleFathers;

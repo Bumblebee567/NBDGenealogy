@@ -35,23 +35,8 @@
             <Button x:Name="LoadModifyPersonView" Margin="3" Content="Modyfikuj osobę" Grid.Column="2" Grid.Row="1"/>
             <Button x:Name="LoadDeletePersonView" Margin="3" Content="Usuń osobę" Grid.Column="3" Grid.Row="1"/>
             <Button x:Name="LoadCommonAncestorsView" Margin="3" Content="Wspólni przodkowie" Grid.Column="4" Grid.Row="1"/>
-            <Button Margin="3" Content="Spadkobiercy" Grid.Column="5" Grid.Row="1"/>
+            <Button x:Name="LoadShowSuccessorsView" Margin="3" Content="Spadkobiercy" Grid.Column="5" Grid.Row="1"/>
             <Button Margin="3" Content="Drzewo potomków" Grid.Column="6" Grid.Row="1"/>
-            <!--<TabControl>
-            <TabItem Header="Dodaj osobę" Tag="1" >
-                <ContentControl x:Name="LoadAddPersonView" cal:View.Model="{Binding ActiveItem}"/>
-            </TabItem>
-            <TabItem Header="Modyfikuj osobę" Tag="2" cal:View.Model="{Binding ActiveItem}">
-            </TabItem>
-            <TabItem Header="Usuń osobę" Tag="3" cal:View.Model="{Binding ActiveItem}">
-            </TabItem>
-            <TabItem Header="Wspólni przodkowie" Tag="4" cal:View.Model="{Binding ActiveItem}">
-            </TabItem>
-            <TabItem Header="Spadkobiercy" Tag="5" cal:View.Model="{Binding ActiveItem}">
-            </TabItem>
-            <TabItem Header="Drzewo potomków" Tag="6" cal:View.Model="{Binding ActiveItem}">
-            </TabItem>
-        </TabControl>-->
         </Grid>
         <Grid>
             <Grid.ColumnDefinitions>

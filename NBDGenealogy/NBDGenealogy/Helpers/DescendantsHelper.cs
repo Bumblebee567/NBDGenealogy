@@ -37,5 +37,41 @@ namespace NBDGenealogy.Helpers
             }
             return personDescendants;
         }
+        public static string ConvertPersonSuccessorsToString(List<PersonModel> successors)
+        {
+            var sb = new StringBuilder();
+            foreach (var successor in successors)
+            {
+                sb.AppendLine(successor.Name);
+            }
+            return sb.ToString();
+        }
+        public static List<PersonModel> GetPersonSuccessors(PersonModel person)
+        {
+            List<PersonModel> personDescendants = new List<PersonModel>();
+            
+            if(person.Children == null)
+            {
+                return personDescendants;
+            }
+            else
+            {
+                foreach (var child in person.Children)
+                {
+                    IObjectContainer db = Db4oFactory.OpenFile("person.data");
+                    var childAsPersonModel = db.QueryByExample(new PersonModel(child)).Next() as PersonModel;
+                    db.Close();
+                    if(childAsPersonModel.DeathDate == null)
+                    {
+                        personDescendants.Add(childAsPersonModel);
+                    }
+                    else
+                    {
+                        personDescendants.AddRange(GetPersonSuccessors(childAsPersonModel));
+                    }
+                }
+                return personDescendants;
+            }
+        }
     }
 }

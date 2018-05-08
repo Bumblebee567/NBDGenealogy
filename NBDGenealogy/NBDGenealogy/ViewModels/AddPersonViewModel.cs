@@ -187,9 +187,14 @@ namespace NBDGenealogy.ViewModels
                         if (newPersonFather.Children == null)
                         {
                             newPersonFather.Children = new List<string>();
+                            newPersonFather.Children.Add(newPerson.Name);
+                            db.Store(newPersonFather);
                         }
-                        newPersonFather.Children.Add(newPerson.Name);
-                        db.Store(newPersonFather);
+                        else
+                        {
+                            newPersonFather.Children.Add(newPerson.Name);
+                            db.Store(newPersonFather.Children);
+                        }
                     }
                     if (newPerson.Mother != null)
                     {
@@ -197,9 +202,14 @@ namespace NBDGenealogy.ViewModels
                         if (newPersonMother.Children == null)
                         {
                             newPersonMother.Children = new List<string>();
+                            newPersonMother.Children.Add(newPerson.Name);
+                            db.Store(newPersonMother);
                         }
-                        newPersonMother.Children.Add(newPerson.Name);
-                        db.Store(newPersonMother);
+                        else
+                        {
+                            newPersonMother.Children.Add(newPerson.Name);
+                            db.Store(newPersonMother.Children);
+                        }
                     }
                     db.Store(newPerson);
                     db.Close();
