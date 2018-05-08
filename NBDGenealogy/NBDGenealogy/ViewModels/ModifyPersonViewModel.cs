@@ -307,7 +307,7 @@ namespace NBDGenealogy.ViewModels
                 if (Gender == EGender.brak)
                 {
                     personToModifiy.Gender = null;
-                    
+
                     if (SelectedPerson.Gender == EGender.Male)
                     {
                         var personsChildren = db.QueryByExample(PersonModel.WithFather(Name));
@@ -413,9 +413,16 @@ namespace NBDGenealogy.ViewModels
                         personToModifiy.Father = Father.Name;
                         var newFather = db.QueryByExample(new PersonModel(Father.Name)).Next() as PersonModel;
                         if (newFather.Children == null)
+                        {
                             newFather.Children = new List<string>();
-                        newFather.Children.Add(Name);
-                        db.Store(newFather);
+                            newFather.Children.Add(Name);
+                            db.Store(newFather);
+                        }
+                        else
+                        {
+                            newFather.Children.Add(Name);
+                            db.Store(newFather.Children);
+                        }
                     }
                 }
                 else
@@ -443,9 +450,16 @@ namespace NBDGenealogy.ViewModels
                         personToModifiy.Mother = Mother.Name;
                         var newMother = db.QueryByExample(new PersonModel(Mother.Name)).Next() as PersonModel;
                         if (newMother.Children == null)
+                        {
                             newMother.Children = new List<string>();
-                        newMother.Children.Add(Name);
-                        db.Store(newMother);
+                            newMother.Children.Add(Name);
+                            db.Store(newMother);
+                        }
+                        else
+                        {
+                            newMother.Children.Add(Name);
+                            db.Store(newMother.Children);
+                        }
                     }
                 }
                 else
