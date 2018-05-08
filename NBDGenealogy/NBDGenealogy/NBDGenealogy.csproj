@@ -111,6 +111,7 @@
     <Compile Include="Models\PersonModel.cs" />
     <Compile Include="ViewModels\AddPersonViewModel.cs" />
     <Compile Include="ViewModels\CommonAncestorsViewModel.cs" />
+    <Compile Include="ViewModels\DeletePersonViewModel.cs" />
     <Compile Include="ViewModels\ModifyPersonViewModel.cs" />
     <Compile Include="ViewModels\StartViewModel.cs" />
     <Compile Include="Views\AddPersonView.xaml.cs">
@@ -118,6 +119,9 @@
     </Compile>
     <Compile Include="Views\CommonAncestorsView.xaml.cs">
       <DependentUpon>CommonAncestorsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DeletePersonView.xaml.cs">
+      <DependentUpon>DeletePersonView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ModifyPersonView.xaml.cs">
       <DependentUpon>ModifyPersonView.xaml</DependentUpon>
@@ -161,6 +165,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\CommonAncestorsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DeletePersonView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

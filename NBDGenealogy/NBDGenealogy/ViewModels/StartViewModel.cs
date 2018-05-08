@@ -31,5 +31,9 @@ namespace NBDGenealogy.ViewModels
         {
             ActivateItem(new CommonAncestorsViewModel());
         }
+        public void LoadDeletePersonView()
+        {
+            ActivateItem(new DeletePersonViewModel());
+        }
     }
 }
