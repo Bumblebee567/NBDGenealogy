@@ -63,10 +63,18 @@ namespace NBDGenealogy.Helpers
         public static ObservableCollection<PersonModel> RemoveDescendantsFromPossibleFathers(ObservableCollection<PersonModel> possibleFathers, PersonModel person)
         {
             var personsDescendants = DescendantsHelper.GetPersonDescendants(person);
+            var items = possibleFathers.Where(x => x.Name == person.Name).ToList();
+            if (items != null)
+            {
+                foreach (var thisPerson in items.ToList())
+                {
+                    possibleFathers.Remove(thisPerson);
+                }
+            }
             foreach (var descendant in personsDescendants)
             {
-                var item = possibleFathers.Where(x => x.Name == descendant.Name).First();
-                possibleFathers.Remove(item);
+                var d = possibleFathers.Where(x => x.Name == descendant.Name).First();
+                possibleFathers.Remove(d);
             }
             return possibleFathers;
         }

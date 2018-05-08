@@ -32,9 +32,17 @@ namespace NBDGenealogy.Models
         {
             Name = name;
         }
-        public PersonModel(PersonModel father)
+        public static PersonModel WithFather(string father)
         {
-            Father = father.Name;
+            var person = new PersonModel();
+            person.Father = father;
+            return person;
+        }
+        public static PersonModel WithMother(string mother)
+        {
+            var person = new PersonModel();
+            person.Mother = mother;
+            return person;
         }
     }
 }

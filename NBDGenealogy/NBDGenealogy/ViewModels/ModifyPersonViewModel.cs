@@ -213,11 +213,16 @@ namespace NBDGenealogy.ViewModels
             }
             possibleFathers = PossibleFathersHelper.RemovePossiblyWrongImportedFathers(possibleFathers) as BindableCollection<PersonModel>;
             possibleFathers = PossibleFathersHelper.RemoveDescendantsFromPossibleFathers(possibleFathers, person) as BindableCollection<PersonModel>;
-            var item = possibleFathers.Where(x => x.Name == person.Name).First();
-            if (item != null)
+            var items = possibleFathers.Where(x => x.Name == person.Name);
+            if (items != null)
             {
-                possibleFathers.Remove(item);
+                foreach (var thisPerson in items.ToList())
+                {
+                    possibleFathers.Remove(thisPerson);
+                }
             }
+            items = null;
+            possibleFathers.Add(new PersonModel("-brak-"));
             return possibleFathers;
         }
         public BindableCollection<PersonModel> AllPossibleMothers(PersonModel person)
@@ -242,11 +247,15 @@ namespace NBDGenealogy.ViewModels
             }
             possibleMothers = PossibleMothersHelper.RemovePossiblyWrongImportedMothers(possibleMothers) as BindableCollection<PersonModel>;
             possibleMothers = PossibleMothersHelper.RemoveDescendantsFromPossibleMothers(possibleMothers, person) as BindableCollection<PersonModel>;
-            var item = possibleMothers.Where(x => x.Name == person.Name).First();
-            if (item != null)
+            var items = possibleMothers.Where(x => x.Name == person.Name);
+            if (items != null)
             {
-                possibleMothers.Remove(item);
+                foreach (var thisPerson in items.ToList())
+                {
+                    possibleMothers.Remove(thisPerson);
+                }
             }
+            possibleMothers.Add(new PersonModel("-brak-"));
             return possibleMothers;
         }
         public BindableCollection<PersonModel> AllPossibleMothers(PersonModel selectedPerson, DateTime birthDate)
@@ -296,7 +305,52 @@ namespace NBDGenealogy.ViewModels
                 personToModifiy.DeathDate = DeathDate;
 
                 if (Gender == EGender.brak)
+                {
                     personToModifiy.Gender = null;
+                    
+                    if (SelectedPerson.Gender == EGender.Male)
+                    {
+                        var personsChildren = db.QueryByExample(PersonModel.WithFather(Name));
+                        List<PersonModel> children = new List<PersonModel>();
+                        foreach (var child in personsChildren)
+                        {
+                            children.Add(child as PersonModel);
+                        }
+                        foreach (var child in children)
+                        {
+                            child.Father = String.Empty;
+                        }
+                        foreach (var child in personsChildren)
+                        {
+                            db.Store(child);
+                        }
+                        if (personToModifiy.Children != null)
+                        {
+                            personToModifiy.Children = null;
+                        }
+                    }
+                    else if (SelectedPerson.Gender == EGender.Female)
+                    {
+                        var personsChildren = db.QueryByExample(PersonModel.WithMother(Name));
+                        List<PersonModel> children = new List<PersonModel>();
+                        foreach (var child in personsChildren)
+                        {
+                            children.Add(child as PersonModel);
+                        }
+                        foreach (var child in children)
+                        {
+                            child.Mother = String.Empty;
+                        }
+                        foreach (var child in personsChildren)
+                        {
+                            db.Store(child);
+                        }
+                        if (personToModifiy.Children != null)
+                        {
+                            personToModifiy.Children = null;
+                        }
+                    }
+                }
                 else
                 {
                     personToModifiy.Gender = Gender;
@@ -305,18 +359,26 @@ namespace NBDGenealogy.ViewModels
                         if (personToModifiy.Children != null)
                         {
                             personToModifiy.Children = null;
-                            if (Gender == EGender.Male)
+                            if (Gender == EGender.Male && SelectedPerson.Gender == EGender.Female)
                             {
-                                var personsChildren = db.QueryByExample(new PersonModel { Mother = Name }) as List<PersonModel>;
+                                var personsChildren = db.QueryByExample(PersonModel.WithMother(Name));
+                                List<PersonModel> children = new List<PersonModel>();
                                 foreach (var child in personsChildren)
                                 {
+                                    children.Add(child as PersonModel);
+                                }
+                                foreach (var child in children)
+                                {
                                     child.Mother = String.Empty;
+                                }
+                                foreach (var child in personsChildren)
+                                {
                                     db.Store(child);
                                 }
                             }
-                            else
+                            else if (Gender == EGender.Female && SelectedPerson.Gender == EGender.Male)
                             {
-                                var personsChildren = db.QueryByExample(new PersonModel { Father = Name });
+                                var personsChildren = db.QueryByExample(PersonModel.WithFather(Name));
                                 List<PersonModel> children = new List<PersonModel>();
                                 foreach (var child in personsChildren)
                                 {
