@@ -36,7 +36,7 @@
             <Button x:Name="LoadDeletePersonView" Margin="3" Content="Usuń osobę" Grid.Column="3" Grid.Row="1"/>
             <Button x:Name="LoadCommonAncestorsView" Margin="3" Content="Wspólni przodkowie" Grid.Column="4" Grid.Row="1"/>
             <Button x:Name="LoadShowSuccessorsView" Margin="3" Content="Spadkobiercy" Grid.Column="5" Grid.Row="1"/>
-            <Button Margin="3" Content="Drzewo potomków" Grid.Column="6" Grid.Row="1"/>
+            <Button x:Name="LoadSuccessorsTreeView" Margin="3" Content="Drzewo potomków" Grid.Column="6" Grid.Row="1"/>
         </Grid>
         <Grid>
             <Grid.ColumnDefinitions>

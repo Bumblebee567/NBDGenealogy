@@ -108,13 +108,16 @@
     <Compile Include="Helpers\DescendantsHelper.cs" />
     <Compile Include="Helpers\PossibleFathersHelper.cs" />
     <Compile Include="Helpers\PossibleMothersHelper.cs" />
+    <Compile Include="Helpers\SuccessorsTreeHelper.cs" />
     <Compile Include="Models\PersonModel.cs" />
+    <Compile Include="Models\SuccessorsTreeItem.cs" />
     <Compile Include="ViewModels\AddPersonViewModel.cs" />
     <Compile Include="ViewModels\CommonAncestorsViewModel.cs" />
     <Compile Include="ViewModels\DeletePersonViewModel.cs" />
     <Compile Include="ViewModels\ModifyPersonViewModel.cs" />
     <Compile Include="ViewModels\ShowSuccessorsViewModel.cs" />
     <Compile Include="ViewModels\StartViewModel.cs" />
+    <Compile Include="ViewModels\SuccessorsTreeViewModel.cs" />
     <Compile Include="Views\AddPersonView.xaml.cs">
       <DependentUpon>AddPersonView.xaml</DependentUpon>
     </Compile>
@@ -132,6 +135,9 @@
     </Compile>
     <Compile Include="Views\StartView.xaml.cs">
       <DependentUpon>StartView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SuccessorsTreeView.xaml.cs">
+      <DependentUpon>SuccessorsTreeView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +191,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\StartView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SuccessorsTreeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

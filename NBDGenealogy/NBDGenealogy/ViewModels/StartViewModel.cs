@@ -39,5 +39,9 @@ namespace NBDGenealogy.ViewModels
         {
             ActivateItem(new ShowSuccessorsViewModel());
         }
+        public void LoadSuccessorsTreeView()
+        {
+            ActivateItem(new SuccessorsTreeViewModel());  
+        }
     }
 }
