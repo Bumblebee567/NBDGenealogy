@@ -301,6 +301,30 @@ namespace NBDGenealogy.ViewModels
             else
             {
                 personToModifiy.Name = Name;
+                if(Name != SelectedPerson.Name)
+                {
+                    if(personToModifiy.Father != String.Empty && personToModifiy.Father != null)
+                    {
+                        var father = db.QueryByExample(new PersonModel(personToModifiy.Father)).Next() as PersonModel;
+                        var child = father.Children.Where(x => x == SelectedPerson.Name).FirstOrDefault();
+                        var newNameChild = Name;
+                        int index = father.Children.IndexOf(child);
+                        if (index != -1)
+                            father.Children[index] = newNameChild;
+                        db.Store(father.Children);
+                    }
+                    if(personToModifiy.Mother != String.Empty && personToModifiy.Mother != null)
+                    {
+                        var mother = db.QueryByExample(new PersonModel(personToModifiy.Mother)).Next() as PersonModel;
+                        var child = mother.Children.Where(x => x == SelectedPerson.Name).FirstOrDefault();
+                        var newNameChild = Name;
+                        int index = mother.Children.IndexOf(child);
+                        if (index != -1)
+                            mother.Children[index] = newNameChild;
+                        db.Store(mother.Children);
+                    }
+                }
+
                 personToModifiy.BirthDate = BirthDate;
 
                 if (DeathDate != null)
