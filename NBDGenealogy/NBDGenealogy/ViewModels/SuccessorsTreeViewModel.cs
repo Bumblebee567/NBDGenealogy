@@ -77,7 +77,9 @@ namespace NBDGenealogy.ViewModels
             else
             {
                 SuccessorsTreeItem root = SuccessorsTreeHelper.GetPersonsChildren(SelectedPerson.Name);
-                SelectedPersonSuccessors = root;
+                SuccessorsTreeItem rootWithFirstPerson = new SuccessorsTreeItem { Title = "root"};
+                rootWithFirstPerson.Items.Add(root);
+                SelectedPersonSuccessors = rootWithFirstPerson;
                 NotifyOfPropertyChange(() => SelectedPersonSuccessors);
             }
         }

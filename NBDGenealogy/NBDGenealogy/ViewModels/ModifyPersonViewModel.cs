@@ -437,6 +437,14 @@ namespace NBDGenealogy.ViewModels
                             newFather.Children.Add(Name);
                             db.Store(newFather.Children);
                         }
+                        if (SelectedPerson.Father != null && SelectedPerson.Father != String.Empty)
+                        {
+                            var previousFather = db.QueryByExample(new PersonModel(SelectedPerson.Father)).Next() as PersonModel;
+                            previousFather.Children.Remove(personToModifiy.Name);
+                            if (previousFather.Children.Count == 0)
+                                previousFather.Children = null;
+                            db.Store(previousFather);
+                        }
                     }
                 }
                 else
@@ -473,6 +481,14 @@ namespace NBDGenealogy.ViewModels
                         {
                             newMother.Children.Add(Name);
                             db.Store(newMother.Children);
+                        }
+                        if (SelectedPerson.Mother != null && SelectedPerson.Mother != String.Empty)
+                        {
+                            var previousMother = db.QueryByExample(new PersonModel(SelectedPerson.Mother)).Next() as PersonModel;
+                            previousMother.Children.Remove(personToModifiy.Name);
+                            if (previousMother.Children.Count == 0)
+                                previousMother.Children = null;
+                            db.Store(previousMother);
                         }
                     }
                 }
