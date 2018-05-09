@@ -337,7 +337,8 @@ namespace NBDGenealogy.ViewModels
                     else
                     {
                         db.Close();
-                        MessageBox.Show("Nie można ustawić podanej daty śmierci", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Nie można ustawić podanej daty śmierci - osoba posiada dzieci urodzone później"
+                            , "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
                 }
